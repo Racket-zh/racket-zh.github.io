@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
- <title type="text">My Blog: My Blog</title>
- <link rel="self" href="http://www.example.com/feeds\all.atom.xml" />
- <link href="http://www.example.com/index.html" />
- <id>urn:http-www-example-com:-index-html</id>
+ <title type="text">Racket中文网站: Racket中文网站</title>
+ <link rel="self" href="http://www.racket-zh.org/feeds\all.atom.xml" />
+ <link href="http://www.racket-zh.org/index.html" />
+ <id>urn:http-www-racket-zh-org:-index-html</id>
  <updated>2018-06-13T03:46:18Z</updated>
  <entry>
   <title type="text">test blog</title>
-  <link rel="alternate" href="http://www.example.com/2018\06\test-blog.html?utm_source=all&amp;utm_medium=Atom" />
-  <id>urn:http-www-example-com:-2018-06-test-blog-html</id>
+  <link rel="alternate" href="http://www.racket-zh.org/2018\06\test-blog.html?utm_source=all&amp;utm_medium=Atom" />
+  <id>urn:http-www-racket-zh-org:-2018-06-test-blog-html</id>
   <published>2018-06-13T03:46:18Z</published>
   <updated>2018-06-13T03:46:18Z</updated>
   <author>
-   <name>The Unknown Author</name></author>
+   <name>未知作者</name></author>
   <content type="html">
 &lt;p&gt; 仅仅做为一个测试&lt;/p&gt;</content></entry></feed>

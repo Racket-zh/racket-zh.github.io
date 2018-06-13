@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <rss version="2.0">
  <channel>
-  <title>My Blog: My Blog</title>
-  <description>My Blog: My Blog</description>
-  <link>http://www.example.com/index.html</link>
+  <title>Racket中文网站: Racket中文网站</title>
+  <description>Racket中文网站: Racket中文网站</description>
+  <link>http://www.racket-zh.org/index.html</link>
   <lastBuildDate>Wed, 13 Jun 2018 03:46:18 UT</lastBuildDate>
   <pubDate>Wed, 13 Jun 2018 03:46:18 UT</pubDate>
   <ttl>1800</ttl>
   <item>
    <title>test blog</title>
-   <link>http://www.example.com/2018\06\test-blog.html?utm_source=all&amp;utm_medium=RSS</link>
-   <guid isPermaLink="false">urn:http-www-example-com:-2018-06-test-blog-html</guid>
+   <link>http://www.racket-zh.org/2018\06\test-blog.html?utm_source=all&amp;utm_medium=RSS</link>
+   <guid isPermaLink="false">urn:http-www-racket-zh-org:-2018-06-test-blog-html</guid>
    <pubDate>Wed, 13 Jun 2018 03:46:18 UT</pubDate>
-   <author>The Unknown Author</author>
+   <author>未知作者</author>
    <description>
 &lt;p&gt; 仅仅做为一个测试&lt;/p&gt;</description></item></channel></rss>
