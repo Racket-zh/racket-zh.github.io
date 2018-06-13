@@ -1,2 +1,2 @@
-http://www.example.com/2018\06\test-blog.html
-http://www.example.com/About.html
+http://www.racket-zh.org/2018\06\test-blog.html
+http://www.racket-zh.org/About.html
