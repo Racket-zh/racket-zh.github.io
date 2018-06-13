@@ -4,18 +4,14 @@
  <link rel="self" href="http://www.example.com/feeds\all.atom.xml" />
  <link href="http://www.example.com/index.html" />
  <id>urn:http-www-example-com:-index-html</id>
- <updated>2011-12-31T16:00:00Z</updated>
+ <updated>2018-06-13T03:46:18Z</updated>
  <entry>
-  <title type="text">A 2012 blog post</title>
-  <link rel="alternate" href="http://www.example.com/2012\01\a-2012-blog-post.html?utm_source=all&amp;utm_medium=Atom" />
-  <id>urn:http-www-example-com:-2012-01-a-2012-blog-post-html</id>
-  <published>2011-12-31T16:00:00Z</published>
-  <updated>2011-12-31T16:00:00Z</updated>
+  <title type="text">test blog</title>
+  <link rel="alternate" href="http://www.example.com/2018\06\test-blog.html?utm_source=all&amp;utm_medium=Atom" />
+  <id>urn:http-www-example-com:-2018-06-test-blog-html</id>
+  <published>2018-06-13T03:46:18Z</published>
+  <updated>2018-06-13T03:46:18Z</updated>
   <author>
    <name>The Unknown Author</name></author>
   <content type="html">
-&lt;p&gt;Here is an example blog post.&lt;/p&gt;
-
-&lt;p&gt;Everything after this paragraph &amp;ldquo;after the break&amp;rdquo;. On index pages and Atom feeds, it will become &amp;ldquo;Continue reading&amp;hellip;&amp;rdquo;, if you configure them to include only the summary &amp;ldquo;blurb&amp;rdquo; before the break.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;some code&lt;/code&gt;&lt;/pre&gt;&lt;a href="http://www.example.com/2012\01\a-2012-blog-post.html?utm_source=all&amp;amp;utm_medium=Atom"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</content></entry></feed>
+&lt;p&gt; 仅仅做为一个测试&lt;/p&gt;</content></entry></feed>

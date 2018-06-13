@@ -1,2 +1,2 @@
-http://www.example.com/2012\01\a-2012-blog-post.html
+http://www.example.com/2018\06\test-blog.html
 http://www.example.com/About.html

@@ -4,18 +4,14 @@
   <title>My Blog: My Blog</title>
   <description>My Blog: My Blog</description>
   <link>http://www.example.com/index.html</link>
-  <lastBuildDate>Sat, 31 Dec 2011 16:00:00 UT</lastBuildDate>
-  <pubDate>Sat, 31 Dec 2011 16:00:00 UT</pubDate>
+  <lastBuildDate>Wed, 13 Jun 2018 03:46:18 UT</lastBuildDate>
+  <pubDate>Wed, 13 Jun 2018 03:46:18 UT</pubDate>
   <ttl>1800</ttl>
   <item>
-   <title>A 2012 blog post</title>
-   <link>http://www.example.com/2012\01\a-2012-blog-post.html?utm_source=all&amp;utm_medium=RSS</link>
-   <guid isPermaLink="false">urn:http-www-example-com:-2012-01-a-2012-blog-post-html</guid>
-   <pubDate>Sat, 31 Dec 2011 16:00:00 UT</pubDate>
+   <title>test blog</title>
+   <link>http://www.example.com/2018\06\test-blog.html?utm_source=all&amp;utm_medium=RSS</link>
+   <guid isPermaLink="false">urn:http-www-example-com:-2018-06-test-blog-html</guid>
+   <pubDate>Wed, 13 Jun 2018 03:46:18 UT</pubDate>
    <author>The Unknown Author</author>
    <description>
-&lt;p&gt;Here is an example blog post.&lt;/p&gt;
-
-&lt;p&gt;Everything after this paragraph &amp;ldquo;after the break&amp;rdquo;. On index pages and Atom feeds, it will become &amp;ldquo;Continue reading&amp;hellip;&amp;rdquo;, if you configure them to include only the summary &amp;ldquo;blurb&amp;rdquo; before the break.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;some code&lt;/code&gt;&lt;/pre&gt;&lt;a href="http://www.example.com/2012\01\a-2012-blog-post.html?utm_source=all&amp;amp;utm_medium=RSS"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</description></item></channel></rss>
+&lt;p&gt; 仅仅做为一个测试&lt;/p&gt;</description></item></channel></rss>
