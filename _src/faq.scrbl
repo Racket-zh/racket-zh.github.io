@@ -38,6 +38,6 @@ Q：我希望在Racket下面使用eval函数，为什么不行？
 A：如果直接使用eval，需在repl下使用，如果想在定义里面使用eval必须先加上这行：
 @code{(current-namespace (make-base-namespace))}
 @section{}
-Q:能不能在DrRacket里面输入latex字符？
+Q:能不能在DrRacket里面输入unicode字符？
 
 A:可以，比如alpha\@italic{Alt+\}   (α)。
