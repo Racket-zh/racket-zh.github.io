@@ -6,7 +6,7 @@
   (-> any)
   (current-scheme/host "http://www.racket-zh.org")
   (current-title "Racket中文网站")
-  (current-author "The Unknown Author"))
+  (current-author "未知作者"))
 
 ;; Called once per post and non-post page, on the contents.
 (define/contract (enhance-body xs)
