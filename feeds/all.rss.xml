@@ -51,4 +51,4 @@
 
 &lt;p&gt;为了防止不卫生的宏污染我们的变量，我们可以给宏展开中增加的语法结构打上一层作用域标记，这样我们就无法引用到宏内声明的变量了。&lt;/p&gt;
 
-&lt;p&gt;这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。&lt;/p&gt;&lt;a href="http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=all&amp;amp;utm_medium=RSS"&gt;&lt;em&gt;More&amp;hellip;&lt;/em&gt;&lt;/a&gt;</description></item></channel></rss>
