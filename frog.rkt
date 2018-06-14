@@ -13,7 +13,8 @@
   (-> (listof xexpr/c) (listof xexpr/c))
   ;; Here we pass the xexprs through a series of functions.
   (~> xs
-      (syntax-highlight #:python-executable "python"
+      (syntax-highlight #:python-executable (if (eq? (system-type 'os) 'windows) "python.exe"
+                                                "python")
                         #:line-numbers? #t
                         #:css-class "source")
       (auto-embed-tweets #:parents? #t)

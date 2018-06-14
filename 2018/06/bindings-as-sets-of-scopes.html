@@ -4,7 +4,7 @@
 
     <meta charset="utf-8">
     <title>Bindings as Sets of Scopes</title>
-    <meta name="description" content="Introduction:  Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  举例说明:   `(let ([a 1])   (let ([a 2]))   a   )`  外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，我们可以通过free-identifier=?函数判断两个identifier是否是同一个，这将会返回#f。  如果我们将第一个let代表的作用域记为local1，第...">
+    <meta name="description" content="Introduction:  Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  举例说明:                     1 2 3 4              (let ([a 1])   (let ([a 2]))   a   )     外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，我们可以通过free-identifier=?函数判断两个identifier是否是同...">
     <meta name="author"      content="未知作者">
     <meta name="keywords"    content="Macro, Racket, Author: Syntacticlsoure">
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
@@ -100,10 +100,24 @@
  <br />举例说明:</p>
 
 <div class="brush: racket">
- <pre><code>(let ([a 1])
-  (let ([a 2]))
-  a
-  )</code></pre></div>
+ <table class="sourcetable">
+  <tbody>
+   <tr>
+    <td class="linenos">
+     <div class="linenodiv">
+      <pre>1
+2
+3
+4</pre></div></td>
+    <td class="code">
+     <div class="source">
+      <pre><span></span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let))" style="color: inherit">let</a></span> <span class="p">([</span><span class="n">a</span> <span class="mi">1</span><span class="p">])</span>
+  <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let))" style="color: inherit">let</a></span> <span class="p">([</span><span class="n">a</span> <span class="mi">2</span><span class="p">]))</span>
+  <span class="n">a</span>
+  <span class="p">)</span>
+</pre></div>
+</td></tr></tbody></table>
+</div>
 
 <p>外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，我们可以通过free-identifier=?函数判断两个identifier是否是同一个，这将会返回#f。  如果我们将第一个let代表的作用域记为local1，第二个记作local2的话，那么内层的a所拥有的作用域集是{local1,local2}，  外层a是{local1}。</p>
 
