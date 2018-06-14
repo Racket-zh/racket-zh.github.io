@@ -6,7 +6,7 @@
 Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  
 举例说明: 
 
-```
+```racket
 (let ([a 1])
   (let ([a 2]))
   a
