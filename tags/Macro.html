@@ -3,15 +3,15 @@
   <head>
 
     <meta charset="utf-8">
-    <title>test blog</title>
-    <meta name="description" content="仅仅做为一个测试...">
+    <title>Posts tagged 'Macro'</title>
+    <meta name="description" content="Posts tagged 'Macro'">
     <meta name="author"      content="未知作者">
-    <meta name="keywords"    content="">
+    <meta name="keywords"    content="Macro">
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
     <link rel="icon"      href="/favicon.ico">
-    <link rel="canonical" href="http://www.racket-zh.org/2018\06\test-blog.html">
+    <link rel="canonical" href="http://www.racket-zh.org/tags\Macro.html">
 
-    <link rel="prev" href="/2018\06\bindings-as-sets-of-scopes.html">
+
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/pygments.css">
@@ -19,9 +19,9 @@
     <link rel="stylesheet" type="text/css" href="/css/custom.css">
     <!-- Feeds -->
     <link rel="alternate" type="application/atom+xml"
-          href="/feeds\all.atom.xml" title="Atom Feed">
+          href="/feeds\Macro.atom.xml" title="Atom Feed">
     <link rel="alternate" type="application/rss+xml"
-          href="/feeds\all.rss.xml" title="RSS Feed">
+          href="/feeds\Macro.rss.xml" title="RSS Feed">
     <!-- JS -->
     <script type="text/javascript">
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -84,61 +84,40 @@
 
 
 
-
+          <h1>Posts tagged <em>Macro</em></h1>
 
           <article>
   <header>
-    <h1>test blog</h1>
+    <h2><a href='/2018\06\bindings-as-sets-of-scopes.html'>Bindings as Sets of Scopes</a></h2>
     <p class='date-and-tags'>
-<time datetime="2018-06-13" pubdate="true">2018-06-13</time> :: <span class="tags"></span></p>
+<time datetime="2018-06-14" pubdate="true">2018-06-14</time> :: <span class="tags"><a href="/tags\Macro.html">Macro</a>, <a href="/tags\Racket.html">Racket</a></span></p>
     <p class='authors'>By: <span class="authors">未知作者</span></p>
   </header>
 
-<p> 仅仅做为一个测试</p>
-  <footer>
-    <script type="text/javascript">
-      !function(d,s,id){
-          var js,fjs=d.getElementsByTagName(s)[0];
-          if(!d.getElementById(id)){
-              js=d.createElement(s);
-              js.id=id;
-              js.src="//platform.twitter.com/widgets.js";
-              fjs.parentNode.insertBefore(js,fjs);
-          }
-      }(document,"script","twitter-wjs");
-    </script>
-    <a href="https://twitter.com/share"
-       class="twitter-share-button"
-       data-url="http://www.racket-zh.org/2018\06\test-blog.html"
-       data-dnt="true">
-      "Tweet"</a>
-    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-    <g:plusone size="medium" href="http://www.racket-zh.org/2018\06\test-blog.html"></g:plusone>
-    <script type="text/javascript">
-      var disqus_shortname = 'shortname';
-      (function() {
-          var dsq = document.createElement('script');
-          dsq.type = 'text/javascript';
-          dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      })();
-    </script>
-    <div id="disqus_thread"></div>
+<h1 id="introduction">Introduction</h1>
 
-    <div class="row justify-content-center">
-      <nav aria-label="Page Navigation">
-        <ul class="pagination">
+<p>Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。
+ <br />举例说明:</p>
 
-          <li class="page-item">
-            <a class="page-link" href="/2018\06\bindings-as-sets-of-scopes.html" aria-label="Next">
-              <span aria-hidden="true">Bindings as Sets of Scopes &rarr;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </footer>
+<pre><code>(let ([a 1])
+  (let ([a 2]))
+  a
+  )</code></pre>
+
+<p>外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，因此free-identifier=?会返回#f。  如果我们将第一个let代表的作用域记为local1，第二个记作local2的话，那么外层的a所拥有的作用域集是{local1,local2}，  内层a是{local2}。</p>
+
+<p>那么racket是如何确定我们返回的a是哪个a呢？</p>
+
+<p>为了区别两个a，我们需要一个独一无二的名字&mdash;internal name，let在绑定变量的时候会将这个identifier和internal name联系起来。 let在被展开的时候，会给body部分打上对应的作用域标记。</p>
+
+<p>因此，我们返回的a的作用域集是{local1,local2}，然后去寻找这个作用域最大子集所代表的identifier，也就是内层的a。</p>
+
+<h1 id="宏展开">宏展开</h1>
+
+<p>为了防止不卫生的宏污染我们的变量，我们可以给宏展开中增加的语法结构打上一层作用域标记，这样我们就无法引用到宏内声明的变量了。</p>
+
+<p>这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。</p>
+
 </article>
         </div>
       </div>

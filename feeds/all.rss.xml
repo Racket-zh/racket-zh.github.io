@@ -4,9 +4,39 @@
   <title>Racket中文网站: Racket中文网站</title>
   <description>Racket中文网站: Racket中文网站</description>
   <link>http://www.racket-zh.org/index.html</link>
-  <lastBuildDate>Wed, 13 Jun 2018 03:46:18 UT</lastBuildDate>
-  <pubDate>Wed, 13 Jun 2018 03:46:18 UT</pubDate>
+  <lastBuildDate>Thu, 14 Jun 2018 06:19:35 UT</lastBuildDate>
+  <pubDate>Thu, 14 Jun 2018 06:19:35 UT</pubDate>
   <ttl>1800</ttl>
+  <item>
+   <title>Bindings as Sets of Scopes</title>
+   <link>http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=all&amp;utm_medium=RSS</link>
+   <guid isPermaLink="false">urn:http-www-racket-zh-org:-2018-06-bindings-as-sets-of-scopes-html</guid>
+   <pubDate>Thu, 14 Jun 2018 06:19:35 UT</pubDate>
+   <author>未知作者</author>
+   <description>
+&lt;h1 id="introduction"&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。
+ &lt;br /&gt;举例说明:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(let ([a 1])
+  (let ([a 2]))
+  a
+  )&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，因此free-identifier=?会返回#f。  如果我们将第一个let代表的作用域记为local1，第二个记作local2的话，那么外层的a所拥有的作用域集是{local1,local2}，  内层a是{local2}。&lt;/p&gt;
+
+&lt;p&gt;那么racket是如何确定我们返回的a是哪个a呢？&lt;/p&gt;
+
+&lt;p&gt;为了区别两个a，我们需要一个独一无二的名字&amp;mdash;internal name，let在绑定变量的时候会将这个identifier和internal name联系起来。 let在被展开的时候，会给body部分打上对应的作用域标记。&lt;/p&gt;
+
+&lt;p&gt;因此，我们返回的a的作用域集是{local1,local2}，然后去寻找这个作用域最大子集所代表的identifier，也就是内层的a。&lt;/p&gt;
+
+&lt;h1 id="宏展开"&gt;宏展开&lt;/h1&gt;
+
+&lt;p&gt;为了防止不卫生的宏污染我们的变量，我们可以给宏展开中增加的语法结构打上一层作用域标记，这样我们就无法引用到宏内声明的变量了。&lt;/p&gt;
+
+&lt;p&gt;这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。&lt;/p&gt;</description></item>
   <item>
    <title>test blog</title>
    <link>http://www.racket-zh.org/2018\06\test-blog.html?utm_source=all&amp;utm_medium=RSS</link>
