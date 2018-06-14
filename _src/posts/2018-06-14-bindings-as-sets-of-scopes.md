@@ -13,8 +13,8 @@ Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifie
   )
 ``` 
 外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，因此free-identifier=?会返回#f。 
-如果我们将第一个let代表的作用域记为local1，第二个记作local2的话，那么外层的a所拥有的作用域集是{local1,local2}， 
-内层a是{local2}。 
+如果我们将第一个let代表的作用域记为local1，第二个记作local2的话，那么内层的a所拥有的作用域集是{local1,local2}， 
+外层a是{local2}。 
 
 那么racket是如何确定我们返回的a是哪个a呢？ 
 
