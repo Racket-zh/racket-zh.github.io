@@ -1,22 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
   <head>
-
     <meta charset="utf-8">
     <title>Posts tagged 'Racket'</title>
     <meta name="description" content="Posts tagged 'Racket'">
     <meta name="author"      content="未知作者">
     <meta name="keywords"    content="Racket">
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
-    <link rel="icon"      href="/favicon.ico">
+    <link rel="icon"      href="/favicon.png">
     <link rel="canonical" href="http://www.racket-zh.org/tags\Racket.html">
 
 
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/pygments.css">
     <link rel="stylesheet" type="text/css" href="/css/scribble.css">
-    <link rel="stylesheet" type="text/css" href="/css/custom.css">
     <!-- Feeds -->
     <link rel="alternate" type="application/atom+xml"
           href="/feeds\Racket.atom.xml" title="Atom Feed">
@@ -34,64 +31,38 @@
     </script>
   </head>
   <body>
-
-    <!-- A standard Twitter Bootstrap nav bar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <div class="container">
-
-      <a href="/index.html" class="navbar-brand">racket中文网站</a>
-
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-              data-target="#navbar_collapse" aria-controls="navbar_collapse"
-              aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbar_collapse">
-          <ul class="navbar-nav mr-auto">
-
-
-            <li class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                Tags <b class="caret"></b>
-              </a>
-
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="/tags\Author-Syntacticlsoure.html">Author: Syntacticlsoure</a><a class="dropdown-item" href="/tags\Macro.html">Macro</a><a class="dropdown-item" href="/tags\Racket.html">Racket</a>
-              </div>
-            </li>
-
-            <li>
-              <a class="nav-link" href="/About.html">About</a>
-            </li> 
-
-
-            <li class="nav-item">
-              <a class="nav-link" href="/faq.html">FAQ</a>
-            </li>
-          </ul>
+    <nav class="navbar">
+      <div class="navbar-title">
+        <a href="/index.html">Racket中文网站</a>
       </div>
-
-      </div>
+      <ul class="navbar-items">
+        <li class="navbar-item">
+          <a href="/About.html">About</a>
+        </li>
+        <li class="navbar-item">
+          <a href="/faq.html">FAQ</a>
+        </li>
+        <li class="navbar-item">
+          <a href="/feeds/all.rss.xml">RSS</a>
+        </li>
+      </ul>
     </nav>
 
 
-    <div class="container">
-      <div class="row">
-
-        <!-- Main column -->
-        <div id="content" class="col-md-12">
+    <main>
 
 
+      <header class="tag-info">Posts tagged <em>Racket</em></header>
 
-          <h1>Posts tagged <em>Racket</em></h1>
-
-          <article>
+      <article>
   <header>
-    <h2><a href='/2018\06\bindings-as-sets-of-scopes.html'>Bindings as Sets of Scopes</a></h2>
-    <p class='date-and-tags'>
-<time datetime="2018-06-14" pubdate="true">2018-06-14</time> :: <span class="tags"><a href="/tags\Macro.html">Macro</a>, <a href="/tags\Racket.html">Racket</a></span></p>
-    <p class='authors'>By: <span class="authors"><a href="/tags\Author-Syntacticlsoure.html">Syntacticlsoure</a></span></p>
+    <h1><a href='/2018\06\bindings-as-sets-of-scopes.html'>Bindings as Sets of Scopes</a></h1>
+    <p>
+      <span class='date'>
+<time datetime="2018-06-14" pubdate="true">2018-06-14</time></span>
+      <span class='authors'>By: <span class="authors"><a href="/tags\Author-Syntacticlsoure.html">Syntacticlsoure</a></span></span>
+    </p>
+    <p class='tags'>Tags: <span class="tags"><a href="/tags\Macro.html">Macro</a>, <a href="/tags\Racket.html">Racket</a></span></p>
   </header>
 
 <h1 id="introduction">Introduction</h1>
@@ -100,24 +71,10 @@
  <br />举例说明:</p>
 
 <div class="brush: racket">
- <table class="sourcetable">
-  <tbody>
-   <tr>
-    <td class="linenos">
-     <div class="linenodiv">
-      <pre>1
-2
-3
-4</pre></div></td>
-    <td class="code">
-     <div class="source">
-      <pre><span></span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let))" style="color: inherit">let</a></span> <span class="p">([</span><span class="n">a</span> <span class="mi">1</span><span class="p">])</span>
-  <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let))" style="color: inherit">let</a></span> <span class="p">([</span><span class="n">a</span> <span class="mi">2</span><span class="p">]))</span>
-  <span class="n">a</span>
-  <span class="p">)</span>
-</pre></div>
-</td></tr></tbody></table>
-</div>
+ <pre><code>(let ([a 1])
+  (let ([a 2]))
+  a
+  )</code></pre></div>
 
 <p>外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，我们可以通过free-identifier=?函数判断两个identifier是否是同一个，这将会返回#f。  如果我们将第一个let代表的作用域记为local1，第二个记作local2的话，那么内层的a所拥有的作用域集是{local1,local2}，  外层a是{local1}。</p>
 
@@ -134,36 +91,10 @@
 <p>这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。</p>
 
 </article>
-        </div>
-      </div>
-      <footer>
-        <hr />
-        <p><a href="https://twitter.com/racketlang"
-              class="twitter-follow-button"
-              data-show-count="false"
-              data-lang="en">
-             "Follow RacketLang"
-           </a>
-           <script type="text/javascript">
-             !function(d,s,id){
-                 var js,fjs=d.getElementsByTagName(s)[0];
-                 if(!d.getElementById(id)){
-                     js=d.createElement(s);
-                     js.id=id;
-                     js.src="//platform.twitter.com/widgets.js";
-                     fjs.parentNode.insertBefore(js,fjs);
-                 }
-             }(document,"script","twitter-wjs");
-           </script></p>
-        <p>Site generated
-        by <a href="https://github.com/greghendershott/frog">Frog</a>,
-        the <strong>fr</strong>ozen bl<strong>og</strong> tool.</p>
-        <p>Using <a href="http://twitter.github.com/bootstrap/index.html">Bootstrap</a>.</p>
-        <p><em>By Racket-zh & Expert-Scheme -- All rights reserved.</em>.</p>
-      </footer>
-    </div>
-    <!-- </body> JS -->
-    <script type="text/javascript" src="/js/jquery-3.2.1.slim.min.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+    </main>
+    <footer>
+      <p class="copyright">By racket-zh & Expert Scheme -- All rights reserved.</p>
+      <p>Site generated by <a href="https://github.com/greghendershott/frog">Frog</a>, the <strong>fr</strong>ozen bl<strong>og</strong> tool.</p>
+    </footer>
   </body>
 </html>
