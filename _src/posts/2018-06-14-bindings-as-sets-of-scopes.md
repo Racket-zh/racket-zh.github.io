@@ -1,7 +1,7 @@
     Title: Bindings as Sets of Scopes
     Date: 2018-06-14T14:19:35
     Tags: Macro,Racket
-    Authors: 
+    Authors: Syntacticlsoure
 #Introduction
 Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  
 举例说明: 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
- <title type="text">Racket中文网站: Posts tagged 'Macro'</title>
- <link rel="self" href="http://www.racket-zh.org/feeds\Macro.atom.xml" />
- <link href="http://www.racket-zh.org/tags\Macro.html" />
- <id>urn:http-www-racket-zh-org:-tags-Macro-html</id>
+ <title type="text">Racket中文网站: Posts tagged 'Author: Syntacticlsoure'</title>
+ <link rel="self" href="http://www.racket-zh.org/feeds\Author-Syntacticlsoure.atom.xml" />
+ <link href="http://www.racket-zh.org/tags\Author-Syntacticlsoure.html" />
+ <id>urn:http-www-racket-zh-org:-tags-Author-Syntacticlsoure-html</id>
  <updated>2018-06-14T06:19:35Z</updated>
  <entry>
   <title type="text">Bindings as Sets of Scopes</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=Macro&amp;utm_medium=Atom" />
+  <link rel="alternate" href="http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=Author-Syntacticlsoure&amp;utm_medium=Atom" />
   <id>urn:http-www-racket-zh-org:-2018-06-bindings-as-sets-of-scopes-html</id>
   <published>2018-06-14T06:19:35Z</published>
   <updated>2018-06-14T06:19:35Z</updated>

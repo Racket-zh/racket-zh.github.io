@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
- <title type="text">Racket中文网站: Posts tagged 'Macro'</title>
- <link rel="self" href="http://www.racket-zh.org/feeds\Macro.atom.xml" />
- <link href="http://www.racket-zh.org/tags\Macro.html" />
- <id>urn:http-www-racket-zh-org:-tags-Macro-html</id>
- <updated>2018-06-14T06:19:35Z</updated>
- <entry>
-  <title type="text">Bindings as Sets of Scopes</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=Macro&amp;utm_medium=Atom" />
-  <id>urn:http-www-racket-zh-org:-2018-06-bindings-as-sets-of-scopes-html</id>
-  <published>2018-06-14T06:19:35Z</published>
-  <updated>2018-06-14T06:19:35Z</updated>
-  <author>
-   <name>Syntacticlsoure</name></author>
-  <content type="html">
+<rss version="2.0">
+ <channel>
+  <title>Racket中文网站: Posts tagged 'Author: Syntacticlsoure'</title>
+  <description>Racket中文网站: Posts tagged 'Author: Syntacticlsoure'</description>
+  <link>http://www.racket-zh.org/tags\Author-Syntacticlsoure.html</link>
+  <lastBuildDate>Thu, 14 Jun 2018 06:19:35 UT</lastBuildDate>
+  <pubDate>Thu, 14 Jun 2018 06:19:35 UT</pubDate>
+  <ttl>1800</ttl>
+  <item>
+   <title>Bindings as Sets of Scopes</title>
+   <link>http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=Author-Syntacticlsoure&amp;utm_medium=RSS</link>
+   <guid isPermaLink="false">urn:http-www-racket-zh-org:-2018-06-bindings-as-sets-of-scopes-html</guid>
+   <pubDate>Thu, 14 Jun 2018 06:19:35 UT</pubDate>
+   <author>Syntacticlsoure</author>
+   <description>
 &lt;h1 id="introduction"&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。
@@ -36,4 +36,4 @@
 
 &lt;p&gt;为了防止不卫生的宏污染我们的变量，我们可以给宏展开中增加的语法结构打上一层作用域标记，这样我们就无法引用到宏内声明的变量了。&lt;/p&gt;
 
-&lt;p&gt;这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。&lt;/p&gt;</content></entry></feed>
+&lt;p&gt;这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。&lt;/p&gt;</description></item></channel></rss>
