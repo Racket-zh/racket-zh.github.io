@@ -5,7 +5,7 @@
 #Introduction
 Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  
 举例说明: 
-
+<!-- more -->
 ```racket
 (let ([a 1])
   (let ([a 2]))
@@ -30,7 +30,7 @@ let在被展开的时候，会给body部分打上对应的作用域标记。
 
 这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。 
 
-<!-- more -->
+
 
 
 

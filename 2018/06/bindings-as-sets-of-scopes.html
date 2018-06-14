@@ -4,7 +4,7 @@
 
     <meta charset="utf-8">
     <title>Bindings as Sets of Scopes</title>
-    <meta name="description" content="Introduction:  Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  举例说明:                     1 2 3 4              (let ([a 1])   (let ([a 2]))   a   )     外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，我们可以通过free-identifier=?函数判断两个identifier是否是同...">
+    <meta name="description" content="Introduction:  Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  举例说明:...">
     <meta name="author"      content="未知作者">
     <meta name="keywords"    content="Macro, Racket, Author: Syntacticlsoure">
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
@@ -98,6 +98,7 @@
 
 <p>Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。
  <br />举例说明:</p>
+<!-- more-->
 
 <div class="brush: racket">
  <table class="sourcetable">
@@ -132,7 +133,6 @@
 <p>为了防止不卫生的宏污染我们的变量，我们可以给宏展开中增加的语法结构打上一层作用域标记，这样我们就无法引用到宏内声明的变量了。</p>
 
 <p>这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。</p>
-<!-- more-->
   <footer>
     <script type="text/javascript">
       !function(d,s,id){
