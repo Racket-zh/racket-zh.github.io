@@ -1,15 +1,17 @@
-<article>
-  <header>
-    <h1><a href='@|uri-path|'>@|title|</a></h1>
-    <p>
-      <span class='date'>@|date|</span>
-      <span class='authors'>By: @|authors|</span>
-    </p>
-    <p class='tags'>Tags: @|tags|</p>
-  </header>
-  @|content-only|
-  @(when more?
-    @list{<div class="more-content">
-            <a href='@|uri-path|'>阅读全文→</a>
-    </div>})
+<article class="index" id="home">
+ @(local-require gregor)
+ 
+<row>
+
+<col-1>  
+  <p class='date-and-tags'>@(~t (iso8601->date date-8601) "dd MMM YYYY")</p></col-1>
+
+<col-2>
+  <h1><a href='@|uri-path|'>@|title|</a></h1>
+  <div class="truncate">@|content-only|</div>
+  <a class="more" href='@|uri-path|'>more →</a>
+<col-2>
+
+</row>
+  
 </article>

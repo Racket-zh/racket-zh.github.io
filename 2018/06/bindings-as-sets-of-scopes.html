@@ -1,68 +1,38 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="en">
   <head>
+
     <meta charset="utf-8">
     <title>Bindings as Sets of Scopes</title>
     <meta name="description" content="Introduction:  Racket的宏系统的实现被称为Bindings as Sets of Scopes，每个identifier拥有一个代表当前作用域的集合。  举例说明:...">
-    <meta name="author"      content="未知作者">
+    <meta name="author"      content="The Unknown Author">
     <meta name="keywords"    content="Macro, Racket, Author: Syntacticlsoure">
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
-    <link rel="icon"      href="/favicon.png">
+    <link rel="icon"      href="/favicon.ico">
     <link rel="canonical" href="http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html">
 
 
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/css/pygments.css">
-    <link rel="stylesheet" type="text/css" href="/css/scribble.css">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/blog-fonts.css">
     <!-- Feeds -->
-    <link rel="alternate" type="application/atom+xml"
-          href="/feeds\all.atom.xml" title="Atom Feed">
-    <link rel="alternate" type="application/rss+xml"
-          href="/feeds\all.rss.xml" title="RSS Feed">
+    <link rel="alternate" type="application/atom+xml" href="/feeds\all.atom.xml" title="Atom Feed">
+    <link rel="alternate" type="application/rss+xml" href="/feeds\all.rss.xml" title="RSS Feed">
     <!-- JS -->
-    <script type="text/javascript">
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-xxxxx', 'auto');
-      ga('send', 'pageview');
-    </script>
-  </head>
+    </head>
   <body>
-    <nav class="navbar">
-      <div class="navbar-title">
-        <a href="/index.html">Racket中文网站</a>
-      </div>
-      <ul class="navbar-items">
-        <li class="navbar-item">
-          <a href="/About.html">About</a>
-        </li>
-        <li class="navbar-item">
-          <a href="/faq.html">FAQ</a>
-        </li>
-        <li class="navbar-item">
-          <a href="/feeds/all.rss.xml">RSS</a>
-        </li>
-      </ul>
-    </nav>
+<row class="one-column" id="logo"><col-1><a href="http://racket-lang.org"><div id="logo-container"><img id="logo" src="/img/racket-logo.svg"/> Racket</div></a></col-1><col-2><p><a href="/index.html">blog</a></p></col-2></row>
+<article>
+<row>
 
+<col-1>
+  <p class='date-and-tags'>14 Jun 2018</p>
 
-    <main>
+</col-1>
 
-
-
-
-      <article>
+<col-2>
   <header>
-    <h1>Bindings as Sets of Scopes</h1>
-    <p>
-      <span class='date'>
-<time datetime="2018-06-14" pubdate="true">2018-06-14</time></span>
-      <span class='authors'>By: <span class="authors"><a href="/tags\Author-Syntacticlsoure.html">Syntacticlsoure</a></span></span>
-    </p>
-    <p class='tags'>Tags: <span class="tags"><a href="/tags\Macro.html">Macro</a>, <a href="/tags\Racket.html">Racket</a></span></p>
+  <h1>Bindings as Sets of Scopes</h1>
   </header>
 
 <h1 id="introduction">Introduction</h1>
@@ -72,23 +42,13 @@
 <!-- more-->
 
 <div class="brush: racket">
- <table class="sourcetable">
-  <tbody>
-   <tr>
-    <td class="linenos">
-     <div class="linenodiv">
-      <pre>1
-2
-3
-4</pre></div></td>
-    <td class="code">
-     <div class="source">
-      <pre><span></span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let))" style="color: inherit">let</a></span> <span class="p">([</span><span class="n">a</span> <span class="mi">1</span><span class="p">])</span>
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let))" style="color: inherit">let</a></span> <span class="p">([</span><span class="n">a</span> <span class="mi">1</span><span class="p">])</span>
   <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let))" style="color: inherit">let</a></span> <span class="p">([</span><span class="n">a</span> <span class="mi">2</span><span class="p">]))</span>
   <span class="n">a</span>
   <span class="p">)</span>
 </pre></div>
-</td></tr></tbody></table>
+
 </div>
 
 <p>外层的a与内层的a作用域不同，也就是两个a不是同一个identifier，我们可以通过free-identifier=?函数判断两个identifier是否是同一个，这将会返回#f。  如果我们将第一个let代表的作用域记为local1，第二个记作local2的话，那么内层的a所拥有的作用域集是{local1,local2}，  外层a是{local1}。</p>
@@ -104,33 +64,27 @@
 <p>为了防止不卫生的宏污染我们的变量，我们可以给宏展开中增加的语法结构打上一层作用域标记，这样我们就无法引用到宏内声明的变量了。</p>
 
 <p>这是通过在宏展开前后翻转一个新的宏作用域(fresh macro-introduction scope)标记来实现的。</p>
-  <footer>
-    <script type="text/javascript">
-      var disqus_shortname = 'shortname';
-      (function() {
-          var dsq = document.createElement('script');
-          dsq.type = 'text/javascript';
-          dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      })();
-    </script>
-    <div id="disqus_thread"></div>
+<col-2>
 
-    <div class="row justify-content-center">
-      <nav aria-label="Page Navigation">
-        <ul class="pagination">
+</row>
+
+<footer>
+<row>
+<col-1>
+</col-1>
+<col-2>
 
 
-        </ul>
-      </nav>
-    </div>
-  </footer>
+
+
+</col-2>
+</row>
+</footer>
+
 </article>
-    </main>
-    <footer>
-      <p class="copyright">By racket-zh & Expert Scheme -- All rights reserved.</p>
-      <p>Site generated by <a href="https://github.com/greghendershott/frog">Frog</a>, the <strong>fr</strong>ozen bl<strong>og</strong> tool.</p>
-    </footer>
+
+<row class="one-column" id="bottom"><col-1></col-1><col-2>
+<p>Made with <a href="https://github.com/greghendershott/frog">Frog</a>, a static-blog generator written in Racket.
+<br /><a href="https://github.com/racket/racket-lang-org">Source code</a> for this blog.</col-2></row>
   </body>
 </html>

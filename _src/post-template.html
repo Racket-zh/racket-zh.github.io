@@ -1,42 +1,33 @@
 <article>
+  @(local-require gregor)
+
+<row>
+
+<col-1>  
+  <p class='date-and-tags'>@(~t (iso8601->date date-8601) "dd MMM YYYY")</p>
+
+</col-1>
+
+<col-2>
   <header>
-    <h1>@|title|</h1>
-    <p>
-      <span class='date'>@|date|</span>
-      <span class='authors'>By: @|authors|</span>
-    </p>
-    <p class='tags'>Tags: @|tags|</p>
+  <h1>@|title|</h1>
   </header>
   @|content|
-  <footer>
-    @disqus-comments["shortname"]
-    @;(older/newer-links[older-uri older-title newer-uri newer-title])
+<col-2>
 
-    @(define (page-navigation prev-uri prev-title new-uri new-title)
-      @list{
-        <div class="row justify-content-center">
-          <nav aria-label="Page Navigation">
-	    <ul class="pagination">
-	      @(when prev-uri
-	        @list{
-	          <li class="page-item">
-	            <a class="page-link" href="@|prev-uri|" aria-label="Previous">
-		      <span aria-hidden="true">&larr; @|prev-title|</span>
-	            </a>
-	          </li>
-	        })
-	      @(when new-uri
-	        @list{
-	          <li class="page-item">
-	            <a class="page-link" href="@|new-uri|" aria-label="Next">
-		      <span aria-hidden="true">@|new-title| &rarr;</span>
-	            </a>
-	          </li>
-	        })
-	    </ul>
-          </nav>
-	</div>})
+</row>
 
-    @page-navigation[older-uri older-title newer-uri newer-title]
-  </footer>
+<footer>
+<row>
+<col-1>
+</col-1>
+<col-2>
+@when[newer-uri]{@list{<h2><span class="label">next</span> <a class="next" href="@|newer-uri|">@|newer-title|</a></h2>}}
+
+@when[older-uri]{@list{<h2><span class="label">prev</span> <a class="previous" href="@|older-uri|">@|older-title|</a></h2>}}
+
+</col-2>
+</row>
+</footer>
+  
 </article>
