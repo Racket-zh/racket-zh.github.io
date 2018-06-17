@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <title>Continuation Marks的简单实现</title>
+    <meta name="description" content="背景:  Continuation Marks——Racket的核心特性之一，虽然直接使用它的人也许很少，但是与其衍生物打交道却是很常见的事情。Continuation Marks是一种通用的在调用链上记录信息的方法，其用途非常广泛，Racket中很多想得到的、想不到的功能，都是使用Continuation Marks实现的，这里不作赘述，有兴趣的朋友可以参阅Racket源码。...">
+    <meta name="author"      content="The Unknown Author">
+    <meta name="keywords"    content="Racket, Continuation, Author: qww6">
+    <meta name="viewport"    content="width=device-width, initial-scale=1.0">
+    <link rel="icon"      href="/favicon.ico">
+    <link rel="canonical" href="http://www.racket-zh.org/2018\06\contmarks.html">
+    <link rel="next" href="/2018\06\bindings-as-sets-of-scopes.html">
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/blog-fonts.css">
+    <!-- Feeds -->
+    <link rel="alternate" type="application/atom+xml" href="/feeds\all.atom.xml" title="Atom Feed">
+    <link rel="alternate" type="application/rss+xml" href="/feeds\all.rss.xml" title="RSS Feed">
+    <!-- JS -->
+    </head>
+  <body>
+<row class="one-column" id="logo"><col-1><a href="http://www.racket-zh.org"><div id="logo-container"><img id="logo" src="/img/racket-logo.svg"/> Racket</div></a></col-1><col-2><p><a href="/index.html">blog</a>
+<a href="/faq.html">FAQ</a>
+<a href="/About.html">About</a>
+</p></col-2></row>
+<article>
+<row>
+
+<col-1>
+  <p class='date-and-tags'>17 Jun 2018</p>
+
+</col-1>
+
+<col-2>
+  <header>
+  <h1>Continuation Marks的简单实现</h1>
+  </header>
+  <p>作者:<span class="authors"><a href="/tags\Author-qww6.html">qww6</a></span></p>
+<p>标签:<span class="tags"><a href="/tags\Racket.html">Racket</a>, <a href="/tags\Continuation.html">Continuation</a></span></p>
+
+<h2 id="背景">背景</h2>
+
+<p>Continuation Marks——Racket的核心特性之一，虽然直接使用它的人也许很少，但是与其衍生物打交道却是很常见的事情。Continuation Marks是一种通用的在调用链上记录信息的方法，其用途非常广泛，Racket中很多想得到的、想不到的功能，都是使用Continuation Marks实现的，这里不作赘述，有兴趣的朋友可以参阅Racket源码。</p>
+<!-- more-->
+
+<p>注：不了解Continuation Marks是什么的，见<a href="https://docs.racket-lang.org/reference/contmarks.html">Racket Reference</a></p>
+
+<p>Continuation Marks最大的特点在于其对尾调用的敏感性，如下例：</p>
+
+<div class="brush: racket">
+ <div class="pygments">
+  <pre><span></span><span class="kn">#lang </span><span class="nn">racket</span>
+
+<span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/define.html#(form._((lib._racket/private/base..rkt)._define))" style="color: inherit">define</a></span> <span class="n">k</span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/contmarks.html#(def._((quote._~23~25kernel)._make-continuation-mark-key))" style="color: inherit">make-continuation-mark-key</a></span><span class="p">))</span>
+
+<span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/wcm.html#(form._((quote._~23~25kernel)._with-continuation-mark))" style="color: inherit">with-continuation-mark</a></span> <span class="n">k</span> <span class="mi">1</span>
+  <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/begin.html#(form._((quote._~23~25kernel)._begin))" style="color: inherit">begin</a></span>
+    <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/wcm.html#(form._((quote._~23~25kernel)._with-continuation-mark))" style="color: inherit">with-continuation-mark</a></span> <span class="n">k</span> <span class="mi">2</span>
+      <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/Writing.html#(def._((quote._~23~25kernel)._display))" style="color: inherit">display</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/contmarks.html#(def._((quote._~23~25kernel)._continuation-mark-set-~3elist))" style="color: inherit">continuation-mark-set-&gt;list</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/contmarks.html#(def._((quote._~23~25kernel)._current-continuation-marks))" style="color: inherit">current-continuation-marks</a></span><span class="p">)</span> <span class="n">k</span><span class="p">)))</span>
+    <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/Byte_and_String_Output.html#(def._((quote._~23~25kernel)._newline))" style="color: inherit">newline</a></span><span class="p">)))</span>
+</pre></div>
+
+</div>
+
+<p>这段代码输出<code>(2 1)</code>，而当我们使用尾调用的时候：</p>
+
+<div class="brush: racket">
+ <div class="pygments">
+  <pre><span></span><span class="kn">#lang </span><span class="nn">racket</span>
+
+<span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/define.html#(form._((lib._racket/private/base..rkt)._define))" style="color: inherit">define</a></span> <span class="n">k</span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/contmarks.html#(def._((quote._~23~25kernel)._make-continuation-mark-key))" style="color: inherit">make-continuation-mark-key</a></span><span class="p">))</span>
+
+<span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/wcm.html#(form._((quote._~23~25kernel)._with-continuation-mark))" style="color: inherit">with-continuation-mark</a></span> <span class="n">k</span> <span class="mi">1</span>
+  <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/wcm.html#(form._((quote._~23~25kernel)._with-continuation-mark))" style="color: inherit">with-continuation-mark</a></span> <span class="n">k</span> <span class="mi">2</span>
+    <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/Writing.html#(def._((lib._racket/private/misc..rkt)._displayln))" style="color: inherit">displayln</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/contmarks.html#(def._((quote._~23~25kernel)._continuation-mark-set-~3elist))" style="color: inherit">continuation-mark-set-&gt;list</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/contmarks.html#(def._((quote._~23~25kernel)._current-continuation-marks))" style="color: inherit">current-continuation-marks</a></span><span class="p">)</span> <span class="n">k</span><span class="p">))))</span>
+</pre></div>
+
+</div>
+
+<p>仅输出<code>(2)</code>，第二个<code>with-continuation-mark</code>因为处于前者的tail position，因此替换前者的记录而非新增一条记录。也就是说，我们不需要看内存占用，就能得知一次函数调用是否为尾调用。</p>
+
+<h2 id="实现">实现</h2>
+
+<p>Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相同，但有一个共同点，那就是均与Continuation实现甚至整个Runtime紧密地耦合在一起。因此，这里将介绍一种在Chez Scheme下，完全正交的实现方法，无需对现有的Continuation实现做任何的改动。</p>
+
+<p>这个方法的关键在于一张哈希表：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="nv">*marks*</span> <span class="p">(</span><span class="nf">make-weak-eq-hashtable</span><span class="p">))</span>
+</pre></div>
+
+</div>
+
+<p>是否觉得一头雾水，现在我将其类型写出来(Typed Racket风格)：<code>(WeakHashTable Continuation (AssocList ContMarkKey Value))</code>，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)</p>
+
+<p>现在我们来实现<code>current-continuation-marks</code>（这里使用了一些Chez的未有文档的api，可以阅读Chez源码作进一步了解）：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">copy-alist</span> <span class="nv">a</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">map </span><span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">slot</span><span class="p">)</span> <span class="p">(</span><span class="nb">cons </span><span class="p">(</span><span class="nb">car </span><span class="nv">slot</span><span class="p">)</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">slot</span><span class="p">)))</span> <span class="nv">a</span><span class="p">))</span>
+
+<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">get-marks</span> <span class="nv">c</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">cond</span>
+   <span class="p">[(</span><span class="nb">eq? </span><span class="nv">c</span> <span class="o">#</span><span class="nv">%$null-continuation</span><span class="p">)</span> <span class="o">&#39;</span><span class="p">()]</span>
+   <span class="p">[(</span><span class="nf">eq-hashtable-ref</span> <span class="nv">*marks*</span> <span class="nv">c</span> <span class="no">#f</span><span class="p">)</span> <span class="nv">=&gt;</span>
+    <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">v</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">cons </span><span class="p">(</span><span class="nf">copy-alist</span> <span class="nv">v</span><span class="p">)</span> <span class="p">(</span><span class="nf">get-marks</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">c</span><span class="p">))))]</span>
+   <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">get-marks</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">c</span><span class="p">))]))</span>
+
+<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">call/1cc</span>
+   <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">cc</span><span class="p">)</span>
+     <span class="p">(</span><span class="nf">get-marks</span> <span class="nv">cc</span><span class="p">))))</span>
+</pre></div>
+
+</div>
+
+<p>非常直截了当，就是把continuation链上的关联列表聚集起来，但是有一点要注意，因为continuation-mark-set是一种不可变数据结构，因此需要复制整个关联列表（当然也可以current-continuation-marks的时候不复制，而是with-continuation-mark的时候复制）。所以这里<code>ContMarkSet</code> 等于 <code>(Listof (AssocList ContMarkKey Value))</code></p>
+
+<p>然后就是<code>with-continuation-mark</code>了，这里我们利用同一tail position的Continuation的pointer equality来检测尾调用：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define-syntax </span><span class="nv">with-continuation-mark</span>
+  <span class="p">(</span><span class="k">syntax-rules </span><span class="p">()</span>
+    <span class="p">[(</span><span class="nf">_</span> <span class="nv">key-expr</span> <span class="nv">val-expr</span> <span class="nv">result-expr</span><span class="p">)</span>
+     <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">k</span> <span class="nv">key-expr</span><span class="p">]</span> <span class="p">[</span><span class="nv">v</span> <span class="nv">val-expr</span><span class="p">])</span>
+       <span class="p">(</span><span class="nf">call/1cc</span>
+        <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">cc</span><span class="p">)</span>
+          <span class="p">(</span><span class="k">define </span><span class="nv">cell</span> <span class="p">(</span><span class="nf">eq-hashtable-cell</span> <span class="nv">*marks*</span> <span class="nv">cc</span> <span class="no">#f</span><span class="p">))</span>
+          <span class="p">(</span><span class="k">cond </span><span class="p">[(</span><span class="nb">cdr </span><span class="nv">cell</span><span class="p">)</span> <span class="nv">=&gt;</span>
+                 <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">a</span><span class="p">)</span>
+                   <span class="p">(</span><span class="nf">cond</span>
+                    <span class="p">[(</span><span class="nb">assq </span><span class="nv">k</span> <span class="nv">a</span><span class="p">)</span> <span class="k">=&gt; </span><span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">slot</span><span class="p">)</span> <span class="p">(</span><span class="nb">set-cdr! </span><span class="nv">slot</span> <span class="nv">v</span><span class="p">))]</span>
+                    <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nb">set-cdr! </span><span class="nv">cell</span> <span class="p">(</span><span class="nb">cons </span><span class="p">(</span><span class="nb">cons </span><span class="nv">k</span> <span class="nv">v</span><span class="p">)</span> <span class="nv">a</span><span class="p">))]))]</span>
+                <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nb">set-cdr! </span><span class="nv">cell</span> <span class="p">(</span><span class="nb">list </span><span class="p">(</span><span class="nb">cons </span><span class="nv">k</span> <span class="nv">v</span><span class="p">)))])</span>
+          <span class="nv">result-expr</span><span class="p">)))]))</span>
+</pre></div>
+
+</div>
+
+<p>再下来就是<code>make-continuation-mark-key</code>，为了方便我们这里直接用gensym：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="nv">make-continuation-mark-key</span>
+  <span class="p">(</span><span class="nf">case-lambda</span>
+    <span class="p">[()</span> <span class="p">(</span><span class="nf">gensym</span><span class="p">)]</span>
+    <span class="p">[(</span><span class="nf">sym</span><span class="p">)</span> <span class="p">(</span><span class="nf">gensym</span> <span class="p">(</span><span class="nb">symbol-&gt;string </span><span class="nv">sym</span><span class="p">))]))</span>
+</pre></div>
+
+</div>
+
+<p><code>continuation-mark-set-&gt;list</code>，非常简单：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">continuation-mark-set-&gt;list</span> <span class="nv">mark-set</span> <span class="nv">key-v</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">l</span> <span class="nv">mark-set</span><span class="p">])</span>
+    <span class="p">(</span><span class="nf">cond</span>
+     <span class="p">[(</span><span class="nb">null? </span><span class="nv">l</span><span class="p">)</span> <span class="o">&#39;</span><span class="p">()]</span>
+     <span class="p">[(</span><span class="nb">assq </span><span class="nv">key-v</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">))</span> <span class="nv">=&gt;</span>
+      <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">slot</span><span class="p">)</span> <span class="p">(</span><span class="nb">cons </span><span class="p">(</span><span class="nb">cdr </span><span class="nv">slot</span><span class="p">)</span> <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">))))]</span>
+     <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">))])))</span>
+</pre></div>
+
+</div>
+
+<p><code>(continuation-mark-set-first mark-set key-v none-v)</code>等价于<code>(let ([v (continuation-mark-set-&gt;list (or mark-set (current-continuation-marks)) key-v)]) (if (null? v) none-v (car v)))</code>，不过我们可以实现的更直接一点，消去一些临时的数据结构：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="nv">continuation-mark-set-first</span>
+  <span class="p">(</span><span class="nf">case-lambda</span>
+    <span class="p">[(</span><span class="nf">mark-set</span> <span class="nv">key-v</span><span class="p">)</span>
+     <span class="p">(</span><span class="nf">continuation-mark-set-first</span> <span class="nv">mark-set</span> <span class="nv">key-v</span> <span class="no">#f</span><span class="p">)]</span>
+    <span class="p">[(</span><span class="nf">mark-set</span> <span class="nv">key-v</span> <span class="nv">none-v</span><span class="p">)</span>
+     <span class="p">(</span><span class="k">if </span><span class="nv">mark-set</span>
+         <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">m</span> <span class="nv">mark-set</span><span class="p">])</span>
+           <span class="p">(</span><span class="nf">cond</span>
+            <span class="p">[(</span><span class="nb">null? </span><span class="nv">m</span><span class="p">)</span> <span class="nv">none-v</span><span class="p">]</span>
+            <span class="p">[(</span><span class="nb">assq </span><span class="nv">key-v</span> <span class="p">(</span><span class="nb">car </span><span class="nv">m</span><span class="p">))</span> <span class="k">=&gt; </span><span class="nv">cdr</span><span class="p">]</span>
+            <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">m</span><span class="p">))]))</span>
+         <span class="p">(</span><span class="nf">call/1cc</span>
+          <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">cc</span><span class="p">)</span>
+            <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">cc</span> <span class="nv">cc</span><span class="p">])</span>
+              <span class="p">(</span><span class="nf">cond</span>
+               <span class="p">[(</span><span class="nb">eq? </span><span class="nv">cc</span> <span class="o">#</span><span class="nv">%$null-continuation</span><span class="p">)</span> <span class="nv">none-v</span><span class="p">]</span>
+               <span class="p">[(</span><span class="nf">eq-hashtable-ref</span> <span class="nv">*marks*</span> <span class="nv">cc</span> <span class="no">#f</span><span class="p">)</span> <span class="nv">=&gt;</span>
+                <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">v</span><span class="p">)</span>
+                  <span class="p">(</span><span class="nf">cond</span>
+                   <span class="p">[(</span><span class="nb">assq </span><span class="nv">key-v</span> <span class="nv">v</span><span class="p">)</span> <span class="k">=&gt; </span><span class="nv">cdr</span><span class="p">]</span>
+                   <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">cc</span><span class="p">))]))]</span>
+               <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">cc</span><span class="p">))])))))]))</span>
+</pre></div>
+
+</div>
+
+<p>然后就是<code>continuation-mark-set-&gt;list*</code>以及<code>call-with-immediate-continuation-mark</code>了：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="nv">continuation-mark-set-&gt;list*</span>
+  <span class="p">(</span><span class="nf">case-lambda</span>
+    <span class="p">[(</span><span class="nf">mark-set</span> <span class="nv">key-list</span><span class="p">)</span>
+     <span class="p">(</span><span class="nf">continuation-mark-set-&gt;list*</span> <span class="nv">mark-set</span> <span class="nv">key-list</span> <span class="no">#f</span><span class="p">)]</span>
+    <span class="p">[(</span><span class="nf">mark-set</span> <span class="nv">key-list</span> <span class="nv">none-v</span><span class="p">)</span>
+     <span class="p">(</span><span class="k">define </span><span class="nv">len</span> <span class="p">(</span><span class="nb">length </span><span class="nv">key-list</span><span class="p">))</span>
+     <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">get-key</span> <span class="nv">k</span> <span class="nv">a</span> <span class="nv">vec</span> <span class="nv">pos</span><span class="p">)</span>
+       <span class="p">(</span><span class="nf">cond</span>
+        <span class="p">[(</span><span class="nb">assq </span><span class="nv">k</span> <span class="nv">a</span><span class="p">)</span> <span class="k">=&gt; </span><span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">v</span><span class="p">)</span> <span class="p">(</span><span class="nb">vector-set! </span><span class="nv">vec</span> <span class="nv">pos</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">v</span><span class="p">)))]</span>
+        <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nb">vector-set! </span><span class="nv">vec</span> <span class="nv">pos</span> <span class="nv">none-v</span><span class="p">)]))</span>
+     <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">get-key-list</span> <span class="nv">a</span><span class="p">)</span>
+       <span class="p">(</span><span class="k">define </span><span class="nv">vec</span> <span class="p">(</span><span class="nb">make-vector </span><span class="nv">len</span><span class="p">))</span>
+       <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">l</span> <span class="nv">key-list</span><span class="p">]</span> <span class="p">[</span><span class="nv">i</span> <span class="mi">0</span><span class="p">])</span>
+         <span class="p">(</span><span class="nf">cond</span>
+          <span class="p">[(</span><span class="nb">null? </span><span class="nv">l</span><span class="p">)</span> <span class="nv">vec</span><span class="p">]</span>
+          <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">get-key</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">)</span> <span class="nv">a</span> <span class="nv">vec</span> <span class="nv">i</span><span class="p">)</span>
+                <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">)</span> <span class="p">(</span><span class="nb">+ </span><span class="nv">i</span> <span class="mi">1</span><span class="p">))])))</span>
+     <span class="p">(</span><span class="nb">map </span><span class="nv">get-key-list</span> <span class="nv">mark-set</span><span class="p">)]))</span>
+
+<span class="p">(</span><span class="k">define </span><span class="nv">call-with-immediate-continuation-mark</span>
+  <span class="p">(</span><span class="nf">case-lambda</span>
+    <span class="p">[(</span><span class="nf">key-v</span> <span class="nv">proc</span><span class="p">)</span>
+     <span class="p">(</span><span class="nf">call-with-immediate-continuation-mark</span> <span class="nv">key-v</span> <span class="nv">proc</span> <span class="no">#f</span><span class="p">)]</span>
+    <span class="p">[(</span><span class="nf">key-v</span> <span class="nv">proc</span> <span class="nv">default-v</span><span class="p">)</span>
+     <span class="p">(</span><span class="nf">call/1cc</span>
+      <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">cc</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">cc</span> <span class="nv">cc</span><span class="p">])</span>
+          <span class="p">(</span><span class="nf">cond</span>
+           <span class="p">[(</span><span class="nb">eq? </span><span class="nv">cc</span> <span class="o">#</span><span class="nv">%$null-continuation</span><span class="p">)</span> <span class="p">(</span><span class="nf">proc</span> <span class="nv">default-v</span><span class="p">)]</span>
+           <span class="p">[(</span><span class="nf">eq-hashtable-ref</span> <span class="nv">*marks*</span> <span class="nv">cc</span> <span class="no">#f</span><span class="p">)</span> <span class="nv">=&gt;</span>
+            <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">v</span><span class="p">)</span>
+              <span class="p">(</span><span class="nf">cond</span>
+               <span class="p">[(</span><span class="nb">assq </span><span class="nv">key-v</span> <span class="nv">v</span><span class="p">)</span> <span class="k">=&gt; </span><span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">slot</span><span class="p">)</span> <span class="p">(</span><span class="nf">proc</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">slot</span><span class="p">)))]</span>
+               <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">proc</span> <span class="nv">default-v</span><span class="p">)]))]</span>
+           <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">cc</span><span class="p">))]))))]))</span>
+</pre></div>
+
+</div>
+
+<p>好了，这样一来主要的api就实现完毕了。</p>
+
+<h2 id="试用">试用</h2>
+
+<p>来试用下吧：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">test1</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define </span><span class="nv">k</span> <span class="p">(</span><span class="nf">make-continuation-mark-key</span><span class="p">))</span>
+  <span class="p">(</span><span class="nf">with-continuation-mark</span>
+   <span class="nv">k</span> <span class="mi">1</span>
+   <span class="p">(</span><span class="nf">begin</span>
+     <span class="p">(</span><span class="nf">with-continuation-mark</span>
+      <span class="nv">k</span> <span class="mi">2</span>
+      <span class="p">(</span><span class="nb">display </span><span class="p">(</span><span class="nf">continuation-mark-set-&gt;list</span> <span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span> <span class="nv">k</span><span class="p">)))</span>
+     <span class="p">(</span><span class="nf">newline</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">test2</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define </span><span class="nv">k</span> <span class="p">(</span><span class="nf">make-continuation-mark-key</span><span class="p">))</span>
+  <span class="p">(</span><span class="nf">with-continuation-mark</span>
+   <span class="nv">k</span> <span class="mi">1</span>
+   <span class="p">(</span><span class="nf">with-continuation-mark</span>
+    <span class="nv">k</span> <span class="mi">2</span>
+    <span class="p">(</span><span class="nf">begin</span>
+      <span class="p">(</span><span class="nb">display </span><span class="p">(</span><span class="nf">continuation-mark-set-&gt;list</span> <span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span> <span class="nv">k</span><span class="p">))</span>
+      <span class="p">(</span><span class="nf">newline</span><span class="p">)))))</span>
+
+<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">test3</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define </span><span class="nv">k1</span> <span class="p">(</span><span class="nf">make-continuation-mark-key</span><span class="p">))</span>
+  <span class="p">(</span><span class="k">define </span><span class="nv">k2</span> <span class="p">(</span><span class="nf">make-continuation-mark-key</span><span class="p">))</span>
+  <span class="p">(</span><span class="nf">with-continuation-mark</span>
+   <span class="nv">k1</span> <span class="mi">1</span>
+   <span class="p">(</span><span class="nf">begin</span>
+     <span class="p">(</span><span class="nf">with-continuation-mark</span>
+      <span class="nv">k2</span> <span class="mi">2</span>
+      <span class="p">(</span><span class="nf">with-continuation-mark</span>
+       <span class="nv">k1</span> <span class="mi">3</span>
+       <span class="p">(</span><span class="nb">display </span><span class="p">(</span><span class="nf">continuation-mark-set-&gt;list*</span> <span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span> <span class="p">(</span><span class="nb">list </span><span class="nv">k1</span> <span class="nv">k2</span><span class="p">)</span> <span class="no">#f</span><span class="p">))))</span>
+     <span class="p">(</span><span class="nf">newline</span><span class="p">))))</span>
+</pre></div>
+
+</div>
+
+<p>输出:</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">test1</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">2</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nv">&gt;</span> <span class="p">(</span><span class="nf">test2</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="nv">&gt;</span> <span class="p">(</span><span class="nf">test3</span><span class="p">)</span>
+<span class="p">(</span><span class="o">#</span><span class="p">(</span><span class="mi">3</span> <span class="mi">2</span><span class="p">)</span> <span class="o">#</span><span class="p">(</span><span class="mi">1</span> <span class="no">#f</span><span class="p">))</span>
+</pre></div>
+
+</div>
+
+<p>然后再来试一下用Continuation Marks实现Parameter：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="nv">parameterization-key</span> <span class="p">(</span><span class="nf">make-continuation-mark-key</span><span class="p">))</span>
+
+<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">make-cm-parameter</span> <span class="nv">v</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">k</span> <span class="p">(</span><span class="nb">list </span><span class="ss">&#39;key</span><span class="p">)]</span>
+        <span class="p">[</span><span class="nv">none</span> <span class="p">(</span><span class="nb">list </span><span class="ss">&#39;none</span><span class="p">)])</span>
+    <span class="p">(</span><span class="nf">case-lambda</span>
+      <span class="p">[()</span>
+       <span class="p">(</span><span class="k">define </span><span class="nv">l</span> <span class="p">(</span><span class="nf">continuation-mark-set-&gt;list</span> <span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span>
+                                              <span class="nv">parameterization-key</span><span class="p">))</span>
+       <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">l</span> <span class="nv">l</span><span class="p">])</span>
+         <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">null? </span><span class="nv">l</span><span class="p">)</span>
+             <span class="nv">v</span>
+             <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">v</span> <span class="p">(</span><span class="nf">eq-hashtable-ref</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">)</span> <span class="nv">k</span> <span class="nv">none</span><span class="p">)])</span>
+               <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">eq? </span><span class="nv">v</span> <span class="nv">none</span><span class="p">)</span>
+                   <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">))</span>
+                   <span class="nv">v</span><span class="p">))))]</span>
+      <span class="p">[(</span><span class="nf">new-v</span><span class="p">)</span>
+       <span class="p">(</span><span class="nf">cond</span>
+        <span class="p">[(</span><span class="nf">continuation-mark-set-first</span> <span class="no">#f</span> <span class="nv">parameterization-key</span> <span class="no">#f</span><span class="p">)</span> <span class="nv">=&gt;</span>
+         <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">p</span><span class="p">)</span>
+           <span class="p">(</span><span class="nf">eq-hashtable-set!</span> <span class="nv">p</span> <span class="nv">k</span> <span class="nv">new-v</span><span class="p">))]</span>
+        <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="k">set! </span><span class="nv">v</span> <span class="nv">new-v</span><span class="p">)])])))</span>
+
+<span class="p">(</span><span class="k">define-syntax </span><span class="p">(</span><span class="nf">cm-parameterize</span> <span class="nv">stx</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">syntax-case</span> <span class="nv">stx</span> <span class="p">()</span>
+    <span class="p">[(</span><span class="nf">_</span> <span class="p">([</span><span class="nv">key</span> <span class="nv">value</span><span class="p">]</span> <span class="o">...</span><span class="p">)</span> <span class="nv">body</span> <span class="nv">body*</span> <span class="o">...</span><span class="p">)</span>
+     <span class="p">(</span><span class="nf">with-syntax</span> <span class="p">([(</span><span class="nf">k</span> <span class="o">...</span><span class="p">)</span> <span class="p">(</span><span class="nf">generate-temporaries</span> <span class="o">#&#39;</span><span class="p">(</span><span class="nv">key</span> <span class="o">...</span><span class="p">))]</span>
+                   <span class="p">[(</span><span class="nf">v</span> <span class="o">...</span><span class="p">)</span> <span class="p">(</span><span class="nf">generate-temporaries</span> <span class="o">#&#39;</span><span class="p">(</span><span class="nv">value</span> <span class="o">...</span><span class="p">))])</span>
+       <span class="o">#&#39;</span><span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">k</span> <span class="nv">key</span><span class="p">]</span> <span class="o">...</span><span class="p">)</span>
+           <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">v</span> <span class="nv">value</span><span class="p">]</span> <span class="o">...</span><span class="p">)</span>
+             <span class="p">(</span><span class="nf">with-continuation-mark</span>
+              <span class="nv">parameterization-key</span> <span class="p">(</span><span class="nf">make-eq-hashtable</span><span class="p">)</span>
+              <span class="p">(</span><span class="nf">k</span> <span class="nv">v</span><span class="p">)</span> <span class="o">...</span>
+              <span class="p">(</span><span class="k">let </span><span class="p">()</span>
+                <span class="nv">body</span>
+                <span class="nv">body*</span> <span class="o">...</span><span class="p">)))))]))</span>
+</pre></div>
+
+</div>
+
+<p>试用：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">test-pm</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define </span><span class="nv">p</span> <span class="p">(</span><span class="nf">make-cm-parameter</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="p">(</span><span class="nf">printf</span> <span class="s">"~a~%"</span> <span class="p">(</span><span class="nf">p</span><span class="p">))</span>
+  <span class="p">(</span><span class="nf">cm-parameterize</span>
+   <span class="p">([</span><span class="nv">p</span> <span class="mi">2</span><span class="p">])</span>
+   <span class="p">(</span><span class="nf">printf</span> <span class="s">"~a~%"</span> <span class="p">(</span><span class="nf">p</span><span class="p">))</span>
+   <span class="p">(</span><span class="nf">p</span> <span class="mi">3</span><span class="p">)</span>
+   <span class="p">(</span><span class="nf">printf</span> <span class="s">"~a~%"</span> <span class="p">(</span><span class="nf">p</span><span class="p">)))</span>
+  <span class="p">(</span><span class="nf">printf</span> <span class="s">"~a~%"</span> <span class="p">(</span><span class="nf">p</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+
+<p>输出：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">test-pm</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span>
+<span class="mi">1</span>
+<span class="nv">&gt;</span> 
+</pre></div>
+
+</div>
+
+<p>那么这个用Continuation Marks实现的cm-parameter和Chez原生的用dynamic-wind和set!实现的parameter有什么差别呢？运行以下函数，你将体会到他们的不同：</p>
+
+<div class="brush: scheme">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">test-loop1</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define </span><span class="nv">p</span> <span class="p">(</span><span class="nf">make-parameter</span> <span class="no">#f</span><span class="p">))</span>
+  <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">()</span>
+    <span class="p">(</span><span class="nf">parameterize</span> <span class="p">([</span><span class="nv">p</span> <span class="no">#t</span><span class="p">])</span>
+      <span class="p">(</span><span class="nf">loop</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">test-loop2</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">define </span><span class="nv">p</span> <span class="p">(</span><span class="nf">make-cm-parameter</span> <span class="no">#f</span><span class="p">))</span>
+  <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">()</span>
+    <span class="p">(</span><span class="nf">cm-parameterize</span> <span class="p">([</span><span class="nv">p</span> <span class="no">#t</span><span class="p">])</span>
+      <span class="p">(</span><span class="nf">loop</span><span class="p">))))</span>
+</pre></div>
+
+</div>
+
+<h2 id="小结">小结</h2>
+
+<p>以上就是Continuation Marks的一种简单实现方法。</p>
+
+<p>当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现<code>continuation-mark-key?</code>和<code>continuation-mark-set?</code>等。这里为了简明不进行这些修改。</p>
+<col-2>
+
+</row>
+
+<footer>
+<row>
+<col-1>
+</col-1>
+<col-2>
+
+
+<h2><span class="label">prev</span> <a class="previous" href="/2018\06\bindings-as-sets-of-scopes.html">Bindings as Sets of Scopes</a></h2>
+
+</col-2>
+</row>
+</footer>
+
+</article>
+
+
+  </body>
+</html>
