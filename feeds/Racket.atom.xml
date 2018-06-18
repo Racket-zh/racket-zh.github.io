@@ -29,7 +29,6 @@
                                          &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;&lt;a href="http://docs.racket-lang.org/reference/pairs.html#(def._((quote._~23~25kernel)._list))" style="color: inherit"&gt;list&lt;/a&gt;&lt;/span&gt; &lt;span class="o"&gt;#'&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
                                          &lt;span class="no"&gt;#f&lt;/span&gt;
                                          &lt;span class="p"&gt;)))&lt;/span&gt;
-                                         &lt;span class="err"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 &lt;/div&gt;
@@ -429,7 +428,7 @@
   <published>2018-06-14T06:19:35Z</published>
   <updated>2018-06-14T06:19:35Z</updated>
   <author>
-   <name>Syntacticlsoure</name></author>
+   <name>Syntacticlosure</name></author>
   <content type="html">
 &lt;h1 id="introduction"&gt;Introduction&lt;/h1&gt;
 
