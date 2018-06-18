@@ -14,29 +14,45 @@
    <pubDate>Mon, 18 Jun 2018 00:09:43 UT</pubDate>
    <author>Syntacticlosure</author>
    <description>
-&lt;p&gt;Racket 7.0.0.2版本最令人激动的功能是&lt;code&gt;local-expand&lt;/code&gt;的增强，多了一个&lt;code&gt;#:extend-stop-ids?&lt;/code&gt;选项，这意味着alexis在(这篇文章)[https://lexi-lambda.github.io/blog/2018/04/15/reimplementing-hackett-s-type-language-expanding-to-custom-core-forms-in-racket/] 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：&lt;/p&gt;
+&lt;p&gt;Racket 7.0.0.2版本最令人激动的功能是&lt;code&gt;local-expand&lt;/code&gt;的增强，多了一个&lt;code&gt;#:extend-stop-ids?&lt;/code&gt;选项，这意味着alexis在&lt;a href="https://lexi-lambda.github.io/blog/2018/04/15/reimplementing-hackett-s-type-language-expanding-to-custom-core-forms-in-racket/"&gt;这篇文章&lt;/a&gt; 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：&lt;/p&gt;
 &lt;!-- more--&gt;
 
 &lt;p&gt;这是在racket 6.12中运行的代码：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;(define-syntax m (syntax-rules ()))
+&lt;div class="brush: racket"&gt;
+ &lt;div class="pygments"&gt;
+  &lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/define.html#(form._((lib._racket/private/base..rkt)._define-syntax))" style="color: inherit"&gt;define-syntax&lt;/a&gt;&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit"&gt;syntax-rules&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;()))&lt;/span&gt;
 
-(begin-for-syntax (display (local-expand #'(let-syntax ([a (syntax-rules ())])
-                                             (m a))
-                                         'expression
-                                         (list #'m)
-                                         #f
-                                         )))
-                                         )&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/begin.html#(form._((quote._~23~25kernel)._begin-for-syntax))" style="color: inherit"&gt;begin-for-syntax&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;&lt;a href="http://docs.racket-lang.org/reference/Writing.html#(def._((quote._~23~25kernel)._display))" style="color: inherit"&gt;display&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;&lt;a href="http://docs.racket-lang.org/reference/stxtrans.html#(def._((quote._~23~25kernel)._local-expand))" style="color: inherit"&gt;local-expand&lt;/a&gt;&lt;/span&gt; &lt;span class="o"&gt;#'&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let-syntax))" style="color: inherit"&gt;let-syntax&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit"&gt;syntax-rules&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;())])&lt;/span&gt;
+                                             &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+                                         &lt;span class="o"&gt;'&lt;/span&gt;&lt;span class="ss"&gt;expression&lt;/span&gt;
+                                         &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;&lt;a href="http://docs.racket-lang.org/reference/pairs.html#(def._((quote._~23~25kernel)._list))" style="color: inherit"&gt;list&lt;/a&gt;&lt;/span&gt; &lt;span class="o"&gt;#'&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                                         &lt;span class="no"&gt;#f&lt;/span&gt;
+                                         &lt;span class="p"&gt;)))&lt;/span&gt;
+                                         &lt;span class="err"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;可以看到，宏并没有被完全展开。 但是在新版本中： &lt;code&gt;(define-syntax m (syntax-rules ()))
+&lt;/div&gt;
 
-(begin-for-syntax (display (local-expand #'(let-syntax ([a (syntax-rules ())])
-                                             (m a))
-                                         'expression
-                                         (list #'m)
-                                         #f
-                                         #:extend-stop-ids? #f)))&lt;/code&gt; 这意味着racket的宏系统更加完善和强大了。&lt;/p&gt;</description></item>
+&lt;p&gt;可以看到，宏并没有被完全展开。&lt;/p&gt;
+
+&lt;p&gt;但是在新版本中：&lt;/p&gt;
+
+&lt;div class="brush: racket"&gt;
+ &lt;div class="pygments"&gt;
+  &lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/define.html#(form._((lib._racket/private/base..rkt)._define-syntax))" style="color: inherit"&gt;define-syntax&lt;/a&gt;&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit"&gt;syntax-rules&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;()))&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/begin.html#(form._((quote._~23~25kernel)._begin-for-syntax))" style="color: inherit"&gt;begin-for-syntax&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;&lt;a href="http://docs.racket-lang.org/reference/Writing.html#(def._((quote._~23~25kernel)._display))" style="color: inherit"&gt;display&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;&lt;a href="http://docs.racket-lang.org/reference/stxtrans.html#(def._((quote._~23~25kernel)._local-expand))" style="color: inherit"&gt;local-expand&lt;/a&gt;&lt;/span&gt; &lt;span class="o"&gt;#'&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let-syntax))" style="color: inherit"&gt;let-syntax&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;&lt;a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit"&gt;syntax-rules&lt;/a&gt;&lt;/span&gt; &lt;span class="p"&gt;())])&lt;/span&gt;
+                                             &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+                                         &lt;span class="o"&gt;'&lt;/span&gt;&lt;span class="ss"&gt;expression&lt;/span&gt;
+                                         &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;&lt;a href="http://docs.racket-lang.org/reference/pairs.html#(def._((quote._~23~25kernel)._list))" style="color: inherit"&gt;list&lt;/a&gt;&lt;/span&gt; &lt;span class="o"&gt;#'&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                                         &lt;span class="no"&gt;#f&lt;/span&gt;
+                                         &lt;span class="kd"&gt;#:extend-stop-ids?&lt;/span&gt; &lt;span class="no"&gt;#f&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;这意味着racket的宏系统更加完善和强大了。&lt;/p&gt;</description></item>
   <item>
    <title>Continuation Marks的简单实现</title>
    <link>http://www.racket-zh.org/2018\06\contmarks.html?utm_source=Racket&amp;utm_medium=RSS</link>

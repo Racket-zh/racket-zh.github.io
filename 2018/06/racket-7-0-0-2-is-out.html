@@ -4,7 +4,7 @@
 
     <meta charset="utf-8">
     <title>racket 7.0.0.2 is out</title>
-    <meta name="description" content="Racket 7.0.0.2版本最令人激动的功能是`local-expand`的增强，多了一个`#:extend-stop-ids?`选项，这意味着alexis在(这篇文章)[https://lexi-lambda.github.io/blog/2018/04/15/reimplementing-hackett-s-type-language-expanding-to-custom-core-forms-in-racket/] 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：...">
+    <meta name="description" content="Racket 7.0.0.2版本最令人激动的功能是`local-expand`的增强，多了一个`#:extend-stop-ids?`选项，这意味着alexis在这篇文章 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：...">
     <meta name="author"      content="The Unknown Author">
     <meta name="keywords"    content="Racket, Author: Syntacticlosure">
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
@@ -40,29 +40,45 @@
   <p>作者:<span class="authors"><a href="/tags\Author-Syntacticlosure.html">Syntacticlosure</a></span></p>
 <p>标签:<span class="tags"><a href="/tags\Racket.html">Racket</a></span></p>
 
-<p>Racket 7.0.0.2版本最令人激动的功能是<code>local-expand</code>的增强，多了一个<code>#:extend-stop-ids?</code>选项，这意味着alexis在(这篇文章)[https://lexi-lambda.github.io/blog/2018/04/15/reimplementing-hackett-s-type-language-expanding-to-custom-core-forms-in-racket/] 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：</p>
+<p>Racket 7.0.0.2版本最令人激动的功能是<code>local-expand</code>的增强，多了一个<code>#:extend-stop-ids?</code>选项，这意味着alexis在<a href="https://lexi-lambda.github.io/blog/2018/04/15/reimplementing-hackett-s-type-language-expanding-to-custom-core-forms-in-racket/">这篇文章</a> 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：</p>
 <!-- more-->
 
 <p>这是在racket 6.12中运行的代码：</p>
 
-<pre><code>(define-syntax m (syntax-rules ()))
+<div class="brush: racket">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/define.html#(form._((lib._racket/private/base..rkt)._define-syntax))" style="color: inherit">define-syntax</a></span> <span class="n">m</span> <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit">syntax-rules</a></span> <span class="p">()))</span>
 
-(begin-for-syntax (display (local-expand #'(let-syntax ([a (syntax-rules ())])
-                                             (m a))
-                                         'expression
-                                         (list #'m)
-                                         #f
-                                         )))
-                                         )</code></pre>
+<span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/begin.html#(form._((quote._~23~25kernel)._begin-for-syntax))" style="color: inherit">begin-for-syntax</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/Writing.html#(def._((quote._~23~25kernel)._display))" style="color: inherit">display</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/stxtrans.html#(def._((quote._~23~25kernel)._local-expand))" style="color: inherit">local-expand</a></span> <span class="o">#'</span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let-syntax))" style="color: inherit">let-syntax</a></span> <span class="p">([</span><span class="n">a</span> <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit">syntax-rules</a></span> <span class="p">())])</span>
+                                             <span class="p">(</span><span class="n">m</span> <span class="n">a</span><span class="p">))</span>
+                                         <span class="o">'</span><span class="ss">expression</span>
+                                         <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/pairs.html#(def._((quote._~23~25kernel)._list))" style="color: inherit">list</a></span> <span class="o">#'</span><span class="n">m</span><span class="p">)</span>
+                                         <span class="no">#f</span>
+                                         <span class="p">)))</span>
+                                         <span class="err">)</span>
+</pre></div>
 
-<p>可以看到，宏并没有被完全展开。 但是在新版本中： <code>(define-syntax m (syntax-rules ()))
+</div>
 
-(begin-for-syntax (display (local-expand #'(let-syntax ([a (syntax-rules ())])
-                                             (m a))
-                                         'expression
-                                         (list #'m)
-                                         #f
-                                         #:extend-stop-ids? #f)))</code> 这意味着racket的宏系统更加完善和强大了。</p>
+<p>可以看到，宏并没有被完全展开。</p>
+
+<p>但是在新版本中：</p>
+
+<div class="brush: racket">
+ <div class="pygments">
+  <pre><span></span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/define.html#(form._((lib._racket/private/base..rkt)._define-syntax))" style="color: inherit">define-syntax</a></span> <span class="n">m</span> <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit">syntax-rules</a></span> <span class="p">()))</span>
+
+<span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/begin.html#(form._((quote._~23~25kernel)._begin-for-syntax))" style="color: inherit">begin-for-syntax</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/Writing.html#(def._((quote._~23~25kernel)._display))" style="color: inherit">display</a></span> <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/stxtrans.html#(def._((quote._~23~25kernel)._local-expand))" style="color: inherit">local-expand</a></span> <span class="o">#'</span><span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/let.html#(form._((lib._racket/private/letstx-scheme..rkt)._let-syntax))" style="color: inherit">let-syntax</a></span> <span class="p">([</span><span class="n">a</span> <span class="p">(</span><span class="k"><a href="http://docs.racket-lang.org/reference/stx-patterns.html#(form._((lib._racket/private/stxcase-scheme..rkt)._syntax-rules))" style="color: inherit">syntax-rules</a></span> <span class="p">())])</span>
+                                             <span class="p">(</span><span class="n">m</span> <span class="n">a</span><span class="p">))</span>
+                                         <span class="o">'</span><span class="ss">expression</span>
+                                         <span class="p">(</span><span class="nb"><a href="http://docs.racket-lang.org/reference/pairs.html#(def._((quote._~23~25kernel)._list))" style="color: inherit">list</a></span> <span class="o">#'</span><span class="n">m</span><span class="p">)</span>
+                                         <span class="no">#f</span>
+                                         <span class="kd">#:extend-stop-ids?</span> <span class="no">#f</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+
+<p>这意味着racket的宏系统更加完善和强大了。</p>
 <col-2>
 
 </row>
