@@ -1,4 +1,5 @@
 http://www.racket-zh.org/2018\06\contmarks.html
+http://www.racket-zh.org/2018\06\racket-7-0-0-2-is-out.html
 http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html
 http://www.racket-zh.org/faq.html
 http://www.racket-zh.org/About.html

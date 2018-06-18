@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <title>racket 7.0.0.2 is out</title>
+    <meta name="description" content="Racket 7.0.0.2版本最令人激动的功能是`local-expand`的增强，多了一个`#:extend-stop-ids?`选项，这意味着alexis在(这篇文章)[https://lexi-lambda.github.io/blog/2018/04/15/reimplementing-hackett-s-type-language-expanding-to-custom-core-forms-in-racket/] 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：...">
+    <meta name="author"      content="The Unknown Author">
+    <meta name="keywords"    content="Racket, Author: Syntacticlosure">
+    <meta name="viewport"    content="width=device-width, initial-scale=1.0">
+    <link rel="icon"      href="/favicon.ico">
+    <link rel="canonical" href="http://www.racket-zh.org/2018\06\racket-7-0-0-2-is-out.html">
+    <link rel="next" href="/2018\06\contmarks.html">
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/blog-fonts.css">
+    <!-- Feeds -->
+    <link rel="alternate" type="application/atom+xml" href="/feeds\all.atom.xml" title="Atom Feed">
+    <link rel="alternate" type="application/rss+xml" href="/feeds\all.rss.xml" title="RSS Feed">
+    <!-- JS -->
+    </head>
+  <body>
+<row class="one-column" id="logo"><col-1><a href="http://www.racket-zh.org"><div id="logo-container"><img id="logo" src="/img/racket-logo.svg"/> Racket</div></a></col-1><col-2><p><a href="/index.html">blog</a>
+<a href="/faq.html">FAQ</a>
+<a href="/About.html">About</a>
+</p></col-2></row>
+<article>
+<row>
+
+<col-1>
+  <p class='date-and-tags'>18 Jun 2018</p>
+
+</col-1>
+
+<col-2>
+  <header>
+  <h1>racket 7.0.0.2 is out</h1>
+  </header>
+  <p>作者:<span class="authors"><a href="/tags\Author-Syntacticlosure.html">Syntacticlosure</a></span></p>
+<p>标签:<span class="tags"><a href="/tags\Racket.html">Racket</a></span></p>
+
+<p>Racket 7.0.0.2版本最令人激动的功能是<code>local-expand</code>的增强，多了一个<code>#:extend-stop-ids?</code>选项，这意味着alexis在(这篇文章)[https://lexi-lambda.github.io/blog/2018/04/15/reimplementing-hackett-s-type-language-expanding-to-custom-core-forms-in-racket/] 中所想要解决的问题不复存在，我们可以通过一段代码来观察变化：</p>
+<!-- more-->
+
+<p>这是在racket 6.12中运行的代码：</p>
+
+<pre><code>(define-syntax m (syntax-rules ()))
+
+(begin-for-syntax (display (local-expand #'(let-syntax ([a (syntax-rules ())])
+                                             (m a))
+                                         'expression
+                                         (list #'m)
+                                         #f
+                                         )))
+                                         )</code></pre>
+
+<p>可以看到，宏并没有被完全展开。 但是在新版本中： <code>(define-syntax m (syntax-rules ()))
+
+(begin-for-syntax (display (local-expand #'(let-syntax ([a (syntax-rules ())])
+                                             (m a))
+                                         'expression
+                                         (list #'m)
+                                         #f
+                                         #:extend-stop-ids? #f)))</code> 这意味着racket的宏系统更加完善和强大了。</p>
+<col-2>
+
+</row>
+
+<footer>
+<row>
+<col-1>
+</col-1>
+<col-2>
+
+
+<h2><span class="label">prev</span> <a class="previous" href="/2018\06\contmarks.html">Continuation Marks的简单实现</a></h2>
+
+</col-2>
+</row>
+</footer>
+
+</article>
+
+
+  </body>
+</html>
