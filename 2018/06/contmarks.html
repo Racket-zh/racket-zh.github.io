@@ -224,21 +224,19 @@
      <span class="p">(</span><span class="nb">map </span><span class="nv">get-key-list</span> <span class="nv">mark-set</span><span class="p">)]))</span>
 
 <span class="p">(</span><span class="k">define </span><span class="nv">call-with-immediate-continuation-mark</span>
-  <span class="p">(</span><span class="nf">case-lambda</span>
-    <span class="p">[(</span><span class="nf">key-v</span> <span class="nv">proc</span><span class="p">)</span>
-     <span class="p">(</span><span class="nf">call-with-immediate-continuation-mark</span> <span class="nv">key-v</span> <span class="nv">proc</span> <span class="no">#f</span><span class="p">)]</span>
-    <span class="p">[(</span><span class="nf">key-v</span> <span class="nv">proc</span> <span class="nv">default-v</span><span class="p">)</span>
-     <span class="p">(</span><span class="nf">call/1cc</span>
-      <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">cc</span><span class="p">)</span>
-        <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">cc</span> <span class="nv">cc</span><span class="p">])</span>
+    <span class="p">(</span><span class="nf">case-lambda</span>
+      <span class="p">[(</span><span class="nf">key-v</span> <span class="nv">proc</span><span class="p">)</span>
+       <span class="p">(</span><span class="nf">call-with-immediate-continuation-mark</span> <span class="nv">key-v</span> <span class="nv">proc</span> <span class="no">#f</span><span class="p">)]</span>
+      <span class="p">[(</span><span class="nf">key-v</span> <span class="nv">proc</span> <span class="nv">default-v</span><span class="p">)</span>
+       <span class="p">(</span><span class="nf">call/1cc</span>
+        <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">cc</span><span class="p">)</span>
           <span class="p">(</span><span class="nf">cond</span>
-           <span class="p">[(</span><span class="nb">eq? </span><span class="nv">cc</span> <span class="o">#</span><span class="nv">%$null-continuation</span><span class="p">)</span> <span class="p">(</span><span class="nf">proc</span> <span class="nv">default-v</span><span class="p">)]</span>
            <span class="p">[(</span><span class="nf">eq-hashtable-ref</span> <span class="nv">*marks*</span> <span class="nv">cc</span> <span class="no">#f</span><span class="p">)</span> <span class="nv">=&gt;</span>
             <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">v</span><span class="p">)</span>
               <span class="p">(</span><span class="nf">cond</span>
                <span class="p">[(</span><span class="nb">assq </span><span class="nv">key-v</span> <span class="nv">v</span><span class="p">)</span> <span class="k">=&gt; </span><span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">slot</span><span class="p">)</span> <span class="p">(</span><span class="nf">proc</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">slot</span><span class="p">)))]</span>
                <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">proc</span> <span class="nv">default-v</span><span class="p">)]))]</span>
-           <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">cc</span><span class="p">))]))))]))</span>
+           <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">proc</span> <span class="nv">default-v</span><span class="p">)])))]))</span>
 </pre></div>
 
 </div>
@@ -307,9 +305,10 @@
  <div class="pygments">
   <pre><span></span><span class="p">(</span><span class="k">define </span><span class="nv">parameterization-key</span> <span class="p">(</span><span class="nf">make-continuation-mark-key</span><span class="p">))</span>
 
+<span class="p">(</span><span class="k">define </span><span class="nv">*get-key*</span> <span class="p">(</span><span class="nf">gensym</span><span class="p">))</span>
+
 <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">make-cm-parameter</span> <span class="nv">v</span><span class="p">)</span>
-  <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">k</span> <span class="p">(</span><span class="nb">list </span><span class="ss">&#39;key</span><span class="p">)]</span>
-        <span class="p">[</span><span class="nv">none</span> <span class="p">(</span><span class="nb">list </span><span class="ss">&#39;none</span><span class="p">)])</span>
+  <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">k</span> <span class="p">(</span><span class="nf">gensym</span><span class="p">)])</span>
     <span class="p">(</span><span class="nf">case-lambda</span>
       <span class="p">[()</span>
        <span class="p">(</span><span class="k">define </span><span class="nv">l</span> <span class="p">(</span><span class="nf">continuation-mark-set-&gt;list</span> <span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span>
@@ -317,16 +316,21 @@
        <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">l</span> <span class="nv">l</span><span class="p">])</span>
          <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">null? </span><span class="nv">l</span><span class="p">)</span>
              <span class="nv">v</span>
-             <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">v</span> <span class="p">(</span><span class="nf">eq-hashtable-ref</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">)</span> <span class="nv">k</span> <span class="nv">none</span><span class="p">)])</span>
-               <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">eq? </span><span class="nv">v</span> <span class="nv">none</span><span class="p">)</span>
-                   <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">))</span>
-                   <span class="nv">v</span><span class="p">))))]</span>
+             <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">eq-hashtable-contains?</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">)</span> <span class="nv">k</span><span class="p">)</span>
+                 <span class="p">(</span><span class="nf">eq-hashtable-ref</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">)</span> <span class="nv">k</span> <span class="no">#f</span><span class="p">)</span>
+                 <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">)))))]</span>
       <span class="p">[(</span><span class="nf">new-v</span><span class="p">)</span>
        <span class="p">(</span><span class="nf">cond</span>
-        <span class="p">[(</span><span class="nf">continuation-mark-set-first</span> <span class="no">#f</span> <span class="nv">parameterization-key</span> <span class="no">#f</span><span class="p">)</span> <span class="nv">=&gt;</span>
-         <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">p</span><span class="p">)</span>
-           <span class="p">(</span><span class="nf">eq-hashtable-set!</span> <span class="nv">p</span> <span class="nv">k</span> <span class="nv">new-v</span><span class="p">))]</span>
-        <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="k">set! </span><span class="nv">v</span> <span class="nv">new-v</span><span class="p">)])])))</span>
+        <span class="p">[(</span><span class="nb">eq? </span><span class="nv">new-v</span> <span class="nv">*get-key*</span><span class="p">)</span> <span class="nv">k</span><span class="p">]</span>
+        <span class="p">[</span><span class="nv">else</span>
+         <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">l</span> <span class="p">(</span><span class="nf">continuation-mark-set-&gt;list</span> <span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span>
+                                               <span class="nv">parameterization-key</span><span class="p">)])</span>
+           <span class="p">(</span><span class="k">let </span><span class="nv">loop</span> <span class="p">([</span><span class="nv">l</span> <span class="nv">l</span><span class="p">])</span>
+             <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">null? </span><span class="nv">l</span><span class="p">)</span>
+                 <span class="p">(</span><span class="k">set! </span><span class="nv">v</span> <span class="nv">new-v</span><span class="p">)</span>
+                 <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">eq-hashtable-contains?</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">)</span> <span class="nv">k</span><span class="p">)</span>
+                     <span class="p">(</span><span class="nf">eq-hashtable-set!</span> <span class="p">(</span><span class="nb">car </span><span class="nv">l</span><span class="p">)</span> <span class="nv">k</span> <span class="nv">new-v</span><span class="p">)</span>
+                     <span class="p">(</span><span class="nf">loop</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">))))))])])))</span>
 
 <span class="p">(</span><span class="k">define-syntax </span><span class="p">(</span><span class="nf">cm-parameterize</span> <span class="nv">stx</span><span class="p">)</span>
   <span class="p">(</span><span class="nf">syntax-case</span> <span class="nv">stx</span> <span class="p">()</span>
@@ -335,8 +339,8 @@
                    <span class="p">[(</span><span class="nf">v</span> <span class="o">...</span><span class="p">)</span> <span class="p">(</span><span class="nf">generate-temporaries</span> <span class="o">#&#39;</span><span class="p">(</span><span class="nv">value</span> <span class="o">...</span><span class="p">))])</span>
        <span class="o">#&#39;</span><span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">k</span> <span class="nv">key</span><span class="p">]</span> <span class="o">...</span><span class="p">)</span>
            <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">v</span> <span class="nv">value</span><span class="p">]</span> <span class="o">...</span><span class="p">)</span>
-             <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">thunk</span> <span class="p">(</span><span class="k">lambda </span><span class="p">()</span>
-                            <span class="p">(</span><span class="nf">k</span> <span class="nv">v</span><span class="p">)</span> <span class="o">...</span>
+             <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">thunk</span> <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">e</span><span class="p">)</span>
+                            <span class="p">(</span><span class="nf">eq-hashtable-set!</span> <span class="nv">e</span> <span class="p">(</span><span class="nf">k</span> <span class="nv">*get-key*</span><span class="p">)</span> <span class="nv">v</span><span class="p">)</span> <span class="o">...</span>
                             <span class="p">(</span><span class="k">let </span><span class="p">()</span>
                               <span class="nv">body</span>
                               <span class="nv">body*</span> <span class="o">...</span><span class="p">))])</span>
@@ -344,10 +348,11 @@
                 <span class="nv">parameterization-key</span>
                 <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">e</span><span class="p">)</span>
                   <span class="p">(</span><span class="k">if </span><span class="nv">e</span>
-                      <span class="p">(</span><span class="nf">thunk</span><span class="p">)</span>
-                      <span class="p">(</span><span class="nf">with-continuation-mark</span>
-                       <span class="nv">parameterization-key</span> <span class="p">(</span><span class="nf">make-eq-hashtable</span><span class="p">)</span>
-                       <span class="p">(</span><span class="nf">thunk</span><span class="p">)))))))))]))</span>
+                      <span class="p">(</span><span class="nf">thunk</span> <span class="nv">e</span><span class="p">)</span>
+                      <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">e</span> <span class="p">(</span><span class="nf">make-eq-hashtable</span><span class="p">)])</span>
+                        <span class="p">(</span><span class="nf">with-continuation-mark</span>
+                         <span class="nv">parameterization-key</span> <span class="nv">e</span>
+                         <span class="p">(</span><span class="nf">thunk</span> <span class="nv">e</span><span class="p">))))))))))]))</span>
 </pre></div>
 
 </div>
