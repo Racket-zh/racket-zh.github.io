@@ -49,7 +49,7 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
 (define *marks* (make-weak-eq-hashtable))
 ```
 
-是否觉得一头雾水，现在我将其类型写出来(Typed Racket风格)：`(WeakHashTable Continuation (AssocList ContMarkKey Value))`，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)
+是否觉得一头雾水？现在我将其类型写出来(Typed Racket风格)：`(WeakHashTable Continuation (AssocList ContMarkKey Value))`，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)
 
 现在我们来实现`current-continuation-marks`（这里使用了一些Chez的未有文档的api，可以阅读Chez源码作进一步了解）：
 
@@ -266,12 +266,19 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
                    [(v ...) (generate-temporaries #'(value ...))])
        #'(let ([k key] ...)
            (let ([v value] ...)
-             (with-continuation-mark
-              parameterization-key (make-eq-hashtable)
-              (k v) ...
-              (let ()
-                body
-                body* ...)))))]))
+             (let ([thunk (lambda ()
+                            (k v) ...
+                            (let ()
+                              body
+                              body* ...))])
+               (call-with-immediate-continuation-mark
+                parameterization-key
+                (lambda (e)
+                  (if e
+                      (thunk)
+                      (with-continuation-mark
+                       parameterization-key (make-eq-hashtable)
+                       (thunk)))))))))]))
 ```
 
 试用：
