@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
  <title type="text">Racket中文网站: Posts tagged 'Racket'</title>
- <link rel="self" href="http://www.racket-zh.org/feeds\Racket.atom.xml" />
- <link href="http://www.racket-zh.org/tags\Racket.html" />
+ <link rel="self" href="http://www.racket-zh.org/feeds/Racket.atom.xml" />
+ <link href="http://www.racket-zh.org/tags/Racket.html" />
  <id>urn:http-www-racket-zh-org:-tags-Racket-html</id>
  <updated>2018-06-18T00:09:43Z</updated>
  <entry>
   <title type="text">racket 7.0.0.2 is out</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018\06\racket-7-0-0-2-is-out.html?utm_source=Racket&amp;utm_medium=Atom" />
+  <link rel="alternate" href="http://www.racket-zh.org/2018/06/racket-7-0-0-2-is-out.html?utm_source=Racket&amp;utm_medium=Atom" />
   <id>urn:http-www-racket-zh-org:-2018-06-racket-7-0-0-2-is-out-html</id>
   <published>2018-06-18T00:09:43Z</published>
   <updated>2018-06-18T00:09:43Z</updated>
@@ -54,7 +54,7 @@
 &lt;p&gt;这意味着racket的宏系统更加完善和强大了。&lt;/p&gt;</content></entry>
  <entry>
   <title type="text">Continuation Marks的简单实现</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018\06\contmarks.html?utm_source=Racket&amp;utm_medium=Atom" />
+  <link rel="alternate" href="http://www.racket-zh.org/2018/06/contmarks.html?utm_source=Racket&amp;utm_medium=Atom" />
   <id>urn:http-www-racket-zh-org:-2018-06-contmarks-html</id>
   <published>2018-06-17T01:43:00Z</published>
   <updated>2018-06-17T01:43:00Z</updated>
@@ -115,7 +115,7 @@
 
 &lt;/div&gt;
 
-&lt;p&gt;是否觉得一头雾水，现在我将其类型写出来(Typed Racket风格)：&lt;code&gt;(WeakHashTable Continuation (AssocList ContMarkKey Value))&lt;/code&gt;，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)&lt;/p&gt;
+&lt;p&gt;是否觉得一头雾水？现在我将其类型写出来(Typed Racket风格)：&lt;code&gt;(WeakHashTable Continuation (AssocList ContMarkKey Value))&lt;/code&gt;，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)&lt;/p&gt;
 
 &lt;p&gt;现在我们来实现&lt;code&gt;current-continuation-marks&lt;/code&gt;（这里使用了一些Chez的未有文档的api，可以阅读Chez源码作进一步了解）：&lt;/p&gt;
 
@@ -356,12 +356,19 @@
                    &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="nf"&gt;v&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;generate-temporaries&lt;/span&gt; &lt;span class="o"&gt;#&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;value&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;))])&lt;/span&gt;
        &lt;span class="o"&gt;#&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="nv"&gt;k&lt;/span&gt; &lt;span class="nv"&gt;key&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
            &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="nv"&gt;v&lt;/span&gt; &lt;span class="nv"&gt;value&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-             &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;with-continuation-mark&lt;/span&gt;
-              &lt;span class="nv"&gt;parameterization-key&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;make-eq-hashtable&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-              &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;k&lt;/span&gt; &lt;span class="nv"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;
-              &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-                &lt;span class="nv"&gt;body&lt;/span&gt;
-                &lt;span class="nv"&gt;body*&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)))))]))&lt;/span&gt;
+             &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="nv"&gt;thunk&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda &lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+                            &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;k&lt;/span&gt; &lt;span class="nv"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;
+                            &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+                              &lt;span class="nv"&gt;body&lt;/span&gt;
+                              &lt;span class="nv"&gt;body*&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;))])&lt;/span&gt;
+               &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;call-with-immediate-continuation-mark&lt;/span&gt;
+                &lt;span class="nv"&gt;parameterization-key&lt;/span&gt;
+                &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;if &lt;/span&gt;&lt;span class="nv"&gt;e&lt;/span&gt;
+                      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;thunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;with-continuation-mark&lt;/span&gt;
+                       &lt;span class="nv"&gt;parameterization-key&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;make-eq-hashtable&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                       &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;thunk&lt;/span&gt;&lt;span class="p"&gt;)))))))))]))&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 &lt;/div&gt;
@@ -423,7 +430,7 @@
 &lt;p&gt;当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现&lt;code&gt;continuation-mark-key?&lt;/code&gt;和&lt;code&gt;continuation-mark-set?&lt;/code&gt;等。这里为了简明不进行这些修改。&lt;/p&gt;</content></entry>
  <entry>
   <title type="text">Bindings as Sets of Scopes</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=Racket&amp;utm_medium=Atom" />
+  <link rel="alternate" href="http://www.racket-zh.org/2018/06/bindings-as-sets-of-scopes.html?utm_source=Racket&amp;utm_medium=Atom" />
   <id>urn:http-www-racket-zh-org:-2018-06-bindings-as-sets-of-scopes-html</id>
   <published>2018-06-14T06:19:35Z</published>
   <updated>2018-06-14T06:19:35Z</updated>

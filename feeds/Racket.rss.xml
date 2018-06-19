@@ -3,13 +3,13 @@
  <channel>
   <title>Racket中文网站: Posts tagged 'Racket'</title>
   <description>Racket中文网站: Posts tagged 'Racket'</description>
-  <link>http://www.racket-zh.org/tags\Racket.html</link>
+  <link>http://www.racket-zh.org/tags/Racket.html</link>
   <lastBuildDate>Mon, 18 Jun 2018 00:09:43 UT</lastBuildDate>
   <pubDate>Mon, 18 Jun 2018 00:09:43 UT</pubDate>
   <ttl>1800</ttl>
   <item>
    <title>racket 7.0.0.2 is out</title>
-   <link>http://www.racket-zh.org/2018\06\racket-7-0-0-2-is-out.html?utm_source=Racket&amp;utm_medium=RSS</link>
+   <link>http://www.racket-zh.org/2018/06/racket-7-0-0-2-is-out.html?utm_source=Racket&amp;utm_medium=RSS</link>
    <guid isPermaLink="false">urn:http-www-racket-zh-org:-2018-06-racket-7-0-0-2-is-out-html</guid>
    <pubDate>Mon, 18 Jun 2018 00:09:43 UT</pubDate>
    <author>Syntacticlosure</author>
@@ -54,7 +54,7 @@
 &lt;p&gt;这意味着racket的宏系统更加完善和强大了。&lt;/p&gt;</description></item>
   <item>
    <title>Continuation Marks的简单实现</title>
-   <link>http://www.racket-zh.org/2018\06\contmarks.html?utm_source=Racket&amp;utm_medium=RSS</link>
+   <link>http://www.racket-zh.org/2018/06/contmarks.html?utm_source=Racket&amp;utm_medium=RSS</link>
    <guid isPermaLink="false">urn:http-www-racket-zh-org:-2018-06-contmarks-html</guid>
    <pubDate>Sun, 17 Jun 2018 01:43:00 UT</pubDate>
    <author>qww6</author>
@@ -113,7 +113,7 @@
 
 &lt;/div&gt;
 
-&lt;p&gt;是否觉得一头雾水，现在我将其类型写出来(Typed Racket风格)：&lt;code&gt;(WeakHashTable Continuation (AssocList ContMarkKey Value))&lt;/code&gt;，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)&lt;/p&gt;
+&lt;p&gt;是否觉得一头雾水？现在我将其类型写出来(Typed Racket风格)：&lt;code&gt;(WeakHashTable Continuation (AssocList ContMarkKey Value))&lt;/code&gt;，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)&lt;/p&gt;
 
 &lt;p&gt;现在我们来实现&lt;code&gt;current-continuation-marks&lt;/code&gt;（这里使用了一些Chez的未有文档的api，可以阅读Chez源码作进一步了解）：&lt;/p&gt;
 
@@ -354,12 +354,19 @@
                    &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="nf"&gt;v&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;generate-temporaries&lt;/span&gt; &lt;span class="o"&gt;#&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;value&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;))])&lt;/span&gt;
        &lt;span class="o"&gt;#&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="nv"&gt;k&lt;/span&gt; &lt;span class="nv"&gt;key&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
            &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="nv"&gt;v&lt;/span&gt; &lt;span class="nv"&gt;value&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-             &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;with-continuation-mark&lt;/span&gt;
-              &lt;span class="nv"&gt;parameterization-key&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;make-eq-hashtable&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-              &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;k&lt;/span&gt; &lt;span class="nv"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;
-              &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-                &lt;span class="nv"&gt;body&lt;/span&gt;
-                &lt;span class="nv"&gt;body*&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)))))]))&lt;/span&gt;
+             &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="nv"&gt;thunk&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda &lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+                            &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;k&lt;/span&gt; &lt;span class="nv"&gt;v&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;
+                            &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let &lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+                              &lt;span class="nv"&gt;body&lt;/span&gt;
+                              &lt;span class="nv"&gt;body*&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;))])&lt;/span&gt;
+               &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;call-with-immediate-continuation-mark&lt;/span&gt;
+                &lt;span class="nv"&gt;parameterization-key&lt;/span&gt;
+                &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;if &lt;/span&gt;&lt;span class="nv"&gt;e&lt;/span&gt;
+                      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;thunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;with-continuation-mark&lt;/span&gt;
+                       &lt;span class="nv"&gt;parameterization-key&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;make-eq-hashtable&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                       &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;thunk&lt;/span&gt;&lt;span class="p"&gt;)))))))))]))&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 &lt;/div&gt;
@@ -421,7 +428,7 @@
 &lt;p&gt;当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现&lt;code&gt;continuation-mark-key?&lt;/code&gt;和&lt;code&gt;continuation-mark-set?&lt;/code&gt;等。这里为了简明不进行这些修改。&lt;/p&gt;</description></item>
   <item>
    <title>Bindings as Sets of Scopes</title>
-   <link>http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=Racket&amp;utm_medium=RSS</link>
+   <link>http://www.racket-zh.org/2018/06/bindings-as-sets-of-scopes.html?utm_source=Racket&amp;utm_medium=RSS</link>
    <guid isPermaLink="false">urn:http-www-racket-zh-org:-2018-06-bindings-as-sets-of-scopes-html</guid>
    <pubDate>Thu, 14 Jun 2018 06:19:35 UT</pubDate>
    <author>Syntacticlosure</author>

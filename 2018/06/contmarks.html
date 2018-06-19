@@ -9,15 +9,15 @@
     <meta name="keywords"    content="Racket, Continuation, Author: qww6">
     <meta name="viewport"    content="width=device-width, initial-scale=1.0">
     <link rel="icon"      href="/favicon.png">
-    <link rel="canonical" href="http://www.racket-zh.org/2018\06\contmarks.html">
-    <link rel="next" href="/2018\06\bindings-as-sets-of-scopes.html">
-    <link rel="prev" href="/2018\06\racket-7-0-0-2-is-out.html">
+    <link rel="canonical" href="http://www.racket-zh.org/2018/06/contmarks.html">
+    <link rel="next" href="/2018/06/bindings-as-sets-of-scopes.html">
+    <link rel="prev" href="/2018/06/racket-7-0-0-2-is-out.html">
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="/css/main.css">
     <link rel="stylesheet" type="text/css" href="/css/blog-fonts.css">
     <!-- Feeds -->
-    <link rel="alternate" type="application/atom+xml" href="/feeds\all.atom.xml" title="Atom Feed">
-    <link rel="alternate" type="application/rss+xml" href="/feeds\all.rss.xml" title="RSS Feed">
+    <link rel="alternate" type="application/atom+xml" href="/feeds/all.atom.xml" title="Atom Feed">
+    <link rel="alternate" type="application/rss+xml" href="/feeds/all.rss.xml" title="RSS Feed">
     <!-- JS -->
     </head>
   <body>
@@ -37,8 +37,8 @@
   <header>
   <h1>Continuation Marks的简单实现</h1>
   </header>
-  <p>作者:<span class="authors"><a href="/tags\Author-qww6.html">qww6</a></span></p>
-<p>标签:<span class="tags"><a href="/tags\Racket.html">Racket</a>, <a href="/tags\Continuation.html">Continuation</a></span></p>
+  <p>作者:<span class="authors"><a href="/tags/Author-qww6.html">qww6</a></span></p>
+<p>标签:<span class="tags"><a href="/tags/Racket.html">Racket</a>, <a href="/tags/Continuation.html">Continuation</a></span></p>
 
 <h2 id="背景">背景</h2>
 
@@ -94,7 +94,7 @@
 
 </div>
 
-<p>是否觉得一头雾水，现在我将其类型写出来(Typed Racket风格)：<code>(WeakHashTable Continuation (AssocList ContMarkKey Value))</code>，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)</p>
+<p>是否觉得一头雾水？现在我将其类型写出来(Typed Racket风格)：<code>(WeakHashTable Continuation (AssocList ContMarkKey Value))</code>，熟悉Racket及Chez的朋友到这里可能就明白了。(注：这里使用weak-eq-hashtable，因为要保证safe for space)</p>
 
 <p>现在我们来实现<code>current-continuation-marks</code>（这里使用了一些Chez的未有文档的api，可以阅读Chez源码作进一步了解）：</p>
 
@@ -335,12 +335,19 @@
                    <span class="p">[(</span><span class="nf">v</span> <span class="o">...</span><span class="p">)</span> <span class="p">(</span><span class="nf">generate-temporaries</span> <span class="o">#&#39;</span><span class="p">(</span><span class="nv">value</span> <span class="o">...</span><span class="p">))])</span>
        <span class="o">#&#39;</span><span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">k</span> <span class="nv">key</span><span class="p">]</span> <span class="o">...</span><span class="p">)</span>
            <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">v</span> <span class="nv">value</span><span class="p">]</span> <span class="o">...</span><span class="p">)</span>
-             <span class="p">(</span><span class="nf">with-continuation-mark</span>
-              <span class="nv">parameterization-key</span> <span class="p">(</span><span class="nf">make-eq-hashtable</span><span class="p">)</span>
-              <span class="p">(</span><span class="nf">k</span> <span class="nv">v</span><span class="p">)</span> <span class="o">...</span>
-              <span class="p">(</span><span class="k">let </span><span class="p">()</span>
-                <span class="nv">body</span>
-                <span class="nv">body*</span> <span class="o">...</span><span class="p">)))))]))</span>
+             <span class="p">(</span><span class="k">let </span><span class="p">([</span><span class="nv">thunk</span> <span class="p">(</span><span class="k">lambda </span><span class="p">()</span>
+                            <span class="p">(</span><span class="nf">k</span> <span class="nv">v</span><span class="p">)</span> <span class="o">...</span>
+                            <span class="p">(</span><span class="k">let </span><span class="p">()</span>
+                              <span class="nv">body</span>
+                              <span class="nv">body*</span> <span class="o">...</span><span class="p">))])</span>
+               <span class="p">(</span><span class="nf">call-with-immediate-continuation-mark</span>
+                <span class="nv">parameterization-key</span>
+                <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">e</span><span class="p">)</span>
+                  <span class="p">(</span><span class="k">if </span><span class="nv">e</span>
+                      <span class="p">(</span><span class="nf">thunk</span><span class="p">)</span>
+                      <span class="p">(</span><span class="nf">with-continuation-mark</span>
+                       <span class="nv">parameterization-key</span> <span class="p">(</span><span class="nf">make-eq-hashtable</span><span class="p">)</span>
+                       <span class="p">(</span><span class="nf">thunk</span><span class="p">)))))))))]))</span>
 </pre></div>
 
 </div>
@@ -409,9 +416,9 @@
 <col-1>
 </col-1>
 <col-2>
-<h2><span class="label">next</span> <a class="next" href="/2018\06\racket-7-0-0-2-is-out.html">racket 7.0.0.2 is out</a></h2>
+<h2><span class="label">next</span> <a class="next" href="/2018/06/racket-7-0-0-2-is-out.html">racket 7.0.0.2 is out</a></h2>
 
-<h2><span class="label">prev</span> <a class="previous" href="/2018\06\bindings-as-sets-of-scopes.html">Bindings as Sets of Scopes</a></h2>
+<h2><span class="label">prev</span> <a class="previous" href="/2018/06/bindings-as-sets-of-scopes.html">Bindings as Sets of Scopes</a></h2>
 
 </col-2>
 </row>
