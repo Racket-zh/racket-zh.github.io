@@ -57,18 +57,18 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
 (define (copy-alist a)
   (map (lambda (slot) (cons (car slot) (cdr slot))) a))
 
-(define (get-marks c)
+(define (continuation-marks c)
   (cond
    [(eq? c #%$null-continuation) '()]
    [(eq-hashtable-ref *marks* c #f) =>
     (lambda (v)
-      (cons (copy-alist v) (get-marks (#%$continuation-link c))))]
-   [else (get-marks (#%$continuation-link c))]))
+      (cons (copy-alist v) (continuation-marks (#%$continuation-link c))))]
+   [else (continuation-marks (#%$continuation-link c))]))
 
 (define (current-continuation-marks)
   (call/1cc
    (lambda (cc)
-     (get-marks cc))))
+     (continuation-marks cc))))
 ```
 
 非常直截了当，就是把continuation链上的关联列表聚集起来，但是有一点要注意，因为continuation-mark-set是一种不可变数据结构，因此需要复制整个关联列表（当然也可以current-continuation-marks的时候不复制，而是with-continuation-mark的时候复制）。所以这里`ContMarkSet` 等于 `(Listof (AssocList ContMarkKey Value))`
