@@ -236,32 +236,28 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
 ```scheme
 (define parameterization-key (make-continuation-mark-key))
 
-(define *get-key* (gensym))
-
 (define (make-cm-parameter v)
-  (let ([k (gensym)])
-    (case-lambda
-      [()
-       (define l (continuation-mark-set->list (current-continuation-marks)
-                                              parameterization-key))
-       (let loop ([l l])
-         (if (null? l)
-             v
-             (if (eq-hashtable-contains? (car l) k)
-                 (eq-hashtable-ref (car l) k #f)
-                 (loop (cdr l)))))]
-      [(new-v)
-       (cond
-        [(eq? new-v *get-key*) k]
-        [else
-         (let ([l (continuation-mark-set->list (current-continuation-marks)
-                                               parameterization-key)])
-           (let loop ([l l])
-             (if (null? l)
-                 (set! v new-v)
-                 (if (eq-hashtable-contains? (car l) k)
-                     (eq-hashtable-set! (car l) k new-v)
-                     (loop (cdr l))))))])])))
+  (letrec ([k
+            (case-lambda
+              [()
+               (define l (continuation-mark-set->list (current-continuation-marks)
+                                                      parameterization-key))
+               (let loop ([l l])
+                 (if (null? l)
+                     v
+                     (if (eq-hashtable-contains? (car l) k)
+                         (eq-hashtable-ref (car l) k #f)
+                         (loop (cdr l)))))]
+              [(new-v)
+               (let ([l (continuation-mark-set->list (current-continuation-marks)
+                                                     parameterization-key)])
+                 (let loop ([l l])
+                   (if (null? l)
+                       (set! v new-v)
+                       (if (eq-hashtable-contains? (car l) k)
+                           (eq-hashtable-set! (car l) k new-v)
+                           (loop (cdr l))))))])])
+    k))
 
 (define-syntax (cm-parameterize stx)
   (syntax-case stx ()
@@ -271,7 +267,7 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
        #'(let ([k key] ...)
            (let ([v value] ...)
              (let ([thunk (lambda (e)
-                            (eq-hashtable-set! e (k *get-key*) v) ...
+                            (eq-hashtable-set! e k v) ...
                             (let ()
                               body
                               body* ...))])
