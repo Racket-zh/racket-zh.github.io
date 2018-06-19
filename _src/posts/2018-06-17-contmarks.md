@@ -163,21 +163,19 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
      (map get-key-list mark-set)]))
 
 (define call-with-immediate-continuation-mark
-  (case-lambda
-    [(key-v proc)
-     (call-with-immediate-continuation-mark key-v proc #f)]
-    [(key-v proc default-v)
-     (call/1cc
-      (lambda (cc)
-        (let loop ([cc cc])
+    (case-lambda
+      [(key-v proc)
+       (call-with-immediate-continuation-mark key-v proc #f)]
+      [(key-v proc default-v)
+       (call/1cc
+        (lambda (cc)
           (cond
-           [(eq? cc #%$null-continuation) (proc default-v)]
            [(eq-hashtable-ref *marks* cc #f) =>
             (lambda (v)
               (cond
                [(assq key-v v) => (lambda (slot) (proc (cdr slot)))]
                [else (proc default-v)]))]
-           [else (loop (#%$continuation-link cc))]))))]))
+           [else (proc default-v)])))]))
 ```
 
 好了，这样一来主要的api就实现完毕了。
@@ -238,9 +236,10 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
 ```scheme
 (define parameterization-key (make-continuation-mark-key))
 
+(define *get-key* (gensym))
+
 (define (make-cm-parameter v)
-  (let ([k (list 'key)]
-        [none (list 'none)])
+  (let ([k (gensym)])
     (case-lambda
       [()
        (define l (continuation-mark-set->list (current-continuation-marks)
@@ -248,16 +247,21 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
        (let loop ([l l])
          (if (null? l)
              v
-             (let ([v (eq-hashtable-ref (car l) k none)])
-               (if (eq? v none)
-                   (loop (cdr l))
-                   v))))]
+             (if (eq-hashtable-contains? (car l) k)
+                 (eq-hashtable-ref (car l) k #f)
+                 (loop (cdr l)))))]
       [(new-v)
        (cond
-        [(continuation-mark-set-first #f parameterization-key #f) =>
-         (lambda (p)
-           (eq-hashtable-set! p k new-v))]
-        [else (set! v new-v)])])))
+        [(eq? new-v *get-key*) k]
+        [else
+         (let ([l (continuation-mark-set->list (current-continuation-marks)
+                                               parameterization-key)])
+           (let loop ([l l])
+             (if (null? l)
+                 (set! v new-v)
+                 (if (eq-hashtable-contains? (car l) k)
+                     (eq-hashtable-set! (car l) k new-v)
+                     (loop (cdr l))))))])])))
 
 (define-syntax (cm-parameterize stx)
   (syntax-case stx ()
@@ -266,8 +270,8 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
                    [(v ...) (generate-temporaries #'(value ...))])
        #'(let ([k key] ...)
            (let ([v value] ...)
-             (let ([thunk (lambda ()
-                            (k v) ...
+             (let ([thunk (lambda (e)
+                            (eq-hashtable-set! e (k *get-key*) v) ...
                             (let ()
                               body
                               body* ...))])
@@ -275,10 +279,11 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
                 parameterization-key
                 (lambda (e)
                   (if e
-                      (thunk)
-                      (with-continuation-mark
-                       parameterization-key (make-eq-hashtable)
-                       (thunk)))))))))]))
+                      (thunk e)
+                      (let ([e (make-eq-hashtable)])
+                        (with-continuation-mark
+                         parameterization-key e
+                         (thunk e))))))))))]))
 ```
 
 试用：
