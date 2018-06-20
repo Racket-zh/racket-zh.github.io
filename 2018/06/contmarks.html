@@ -103,18 +103,18 @@
   <pre><span></span><span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">copy-alist</span> <span class="nv">a</span><span class="p">)</span>
   <span class="p">(</span><span class="nb">map </span><span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">slot</span><span class="p">)</span> <span class="p">(</span><span class="nb">cons </span><span class="p">(</span><span class="nb">car </span><span class="nv">slot</span><span class="p">)</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">slot</span><span class="p">)))</span> <span class="nv">a</span><span class="p">))</span>
 
-<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">get-marks</span> <span class="nv">c</span><span class="p">)</span>
+<span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">continuation-marks</span> <span class="nv">c</span><span class="p">)</span>
   <span class="p">(</span><span class="nf">cond</span>
    <span class="p">[(</span><span class="nb">eq? </span><span class="nv">c</span> <span class="o">#</span><span class="nv">%$null-continuation</span><span class="p">)</span> <span class="o">&#39;</span><span class="p">()]</span>
    <span class="p">[(</span><span class="nf">eq-hashtable-ref</span> <span class="nv">*marks*</span> <span class="nv">c</span> <span class="no">#f</span><span class="p">)</span> <span class="nv">=&gt;</span>
     <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">v</span><span class="p">)</span>
-      <span class="p">(</span><span class="nb">cons </span><span class="p">(</span><span class="nf">copy-alist</span> <span class="nv">v</span><span class="p">)</span> <span class="p">(</span><span class="nf">get-marks</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">c</span><span class="p">))))]</span>
-   <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">get-marks</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">c</span><span class="p">))]))</span>
+      <span class="p">(</span><span class="nb">cons </span><span class="p">(</span><span class="nf">copy-alist</span> <span class="nv">v</span><span class="p">)</span> <span class="p">(</span><span class="nf">continuation-marks</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">c</span><span class="p">))))]</span>
+   <span class="p">[</span><span class="k">else </span><span class="p">(</span><span class="nf">continuation-marks</span> <span class="p">(</span><span class="o">#</span><span class="nv">%$continuation-link</span> <span class="nv">c</span><span class="p">))]))</span>
 
 <span class="p">(</span><span class="k">define </span><span class="p">(</span><span class="nf">current-continuation-marks</span><span class="p">)</span>
   <span class="p">(</span><span class="nf">call/1cc</span>
    <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">cc</span><span class="p">)</span>
-     <span class="p">(</span><span class="nf">get-marks</span> <span class="nv">cc</span><span class="p">))))</span>
+     <span class="p">(</span><span class="nf">continuation-marks</span> <span class="nv">cc</span><span class="p">))))</span>
 </pre></div>
 
 </div>
@@ -407,7 +407,7 @@
 
 <p>以上就是Continuation Marks的一种简单实现方法。</p>
 
-<p>当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现<code>continuation-mark-key?</code>和<code>continuation-mark-set?</code>等。这里为了简明不进行这些修改。</p>
+<p>当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现<code>continuation-mark-key?</code>和<code>continuation-mark-set?</code>等。这里为了简明不进行这些修改，改进过的版本可以在这个<a href="https://github.com/yjqww6/chez-contmarks">repo</a>中找到。</p>
 <col-2>
 
 </row>
