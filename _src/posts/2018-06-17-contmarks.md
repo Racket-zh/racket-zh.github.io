@@ -327,4 +327,4 @@ Racket、Racket-on-Chez以及Pycket对Continuation Marks的实现方式各不相
 
 以上就是Continuation Marks的一种简单实现方法。
 
-当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现`continuation-mark-key?`和`continuation-mark-set?`等。这里为了简明不进行这些修改。
+当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现`continuation-mark-key?`和`continuation-mark-set?`等。这里为了简明不进行这些修改，改进过的版本可以在这个[repo](https://github.com/yjqww6/chez-contmarks)中找到。
