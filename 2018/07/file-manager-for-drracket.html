@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <title>File Manager for DrRacket</title>
+    <meta name="description" content="在DrRacket上面写代码是一件痛苦的事情，因为没有文件管理器，所以当有很多文件需要编辑的时候需要 一个一个打开，而且容易打开许多窗口，切换起来也及其麻烦。  为了解决这个问题，我写了一个插件。...">
+    <meta name="author"      content="The Unknown Author">
+    <meta name="keywords"    content="DrRacket, Plugin, Author: Syntacticlosure">
+    <meta name="viewport"    content="width=device-width, initial-scale=1.0">
+    <link rel="icon"      href="/favicon.png">
+    <link rel="canonical" href="http://www.racket-zh.org/2018\07\file-manager-for-drracket.html">
+    <link rel="next" href="/2018\06\racket-7-0-0-2-is-out.html">
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/blog-fonts.css">
+    <!-- Feeds -->
+    <link rel="alternate" type="application/atom+xml" href="/feeds\all.atom.xml" title="Atom Feed">
+    <link rel="alternate" type="application/rss+xml" href="/feeds\all.rss.xml" title="RSS Feed">
+    <!-- JS -->
+    </head>
+  <body>
+<row class="one-column" id="logo"><col-1><a href="http://www.racket-zh.org"><div id="logo-container"><img id="logo" src="/img/racket-logo.svg"/> Racket</div></a></col-1><col-2><p><a href="/index.html">blog</a>
+<a href="/faq.html">FAQ</a>
+<a href="/About.html">About</a>
+</p></col-2></row>
+<article>
+<row>
+
+<col-1>
+  <p class='date-and-tags'>09 Jul 2018</p>
+
+</col-1>
+
+<col-2>
+  <header>
+  <h1>File Manager for DrRacket</h1>
+  </header>
+  <p>作者:<span class="authors"><a href="/tags\Author-Syntacticlosure.html">Syntacticlosure</a></span></p>
+<p>标签:<span class="tags"><a href="/tags\DrRacket.html">DrRacket</a>, <a href="/tags\Plugin.html">Plugin</a></span></p>
+
+<p>在DrRacket上面写代码是一件痛苦的事情，因为没有文件管理器，所以当有很多文件需要编辑的时候需要 一个一个打开，而且容易打开许多窗口，切换起来也及其麻烦。</p>
+
+<p>为了解决这个问题，我写了一个插件。</p>
+<!-- more-->
+
+<div class="figure"><img src="https://user-images.githubusercontent.com/22510026/42439375-5663ee04-8395-11e8-84e3-af6a89b32532.png" alt="image" />
+ <p class="caption">image</p></div>
+
+<p>要安装她，请使用如下命令：</p>
+
+<pre><code>raco pkg install files-viewer</code></pre>
+
+<p>或者在DrRacket的Package Manager里面搜索files-viewer安装。</p>
+
+<p>安装完成之后，这时插件还没有被显示，你需要点击view菜单下的show the file manager选项，然后左边就会出现一个文件管理器 。你可以自由拖动她到一个合适的大小，并且下次启动DrRacket依然会以该大小显示。</p>
+
+<p>当你的文件结构发生了变化，请立即使用refresh，文件管理器会自动更新变化。</p>
+
+<p>当你需要编辑某个文件夹下的代码时，请右击文件管理器，选择change the directory，然后选择你需要编辑的文件夹。</p>
+
+<p>当你不需要显示某些文件的时候，使用file filter功能，如不需要显示bak文件，就将file filter配置为 .bak 。</p>
+
+<p>你可以快速在目录下打开命令行，只需要使用open terminal here选项，但是在此之前需要配置与你系统相关的终端启动命令。</p>
+
+<p>如在windows下，你可以使用该配置：</p>
+
+<pre><code>start /d ~a cmd</code></pre>
+
+<p>~a代表所选中的文件所在目录或直接选中的目录。</p>
+<col-2>
+
+</row>
+
+<footer>
+<row>
+<col-1>
+</col-1>
+<col-2>
+
+
+<h2><span class="label">prev</span> <a class="previous" href="/2018\06\racket-7-0-0-2-is-out.html">racket 7.0.0.2 is out</a></h2>
+
+</col-2>
+</row>
+</footer>
+
+</article>
+
+
+  </body>
+</html>

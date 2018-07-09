@@ -1,13 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
  <title type="text">Racket中文网站: Racket中文网站</title>
- <link rel="self" href="http://www.racket-zh.org/feeds/all.atom.xml" />
+ <link rel="self" href="http://www.racket-zh.org/feeds\all.atom.xml" />
  <link href="http://www.racket-zh.org/index.html" />
  <id>urn:http-www-racket-zh-org:-index-html</id>
- <updated>2018-06-18T00:09:43Z</updated>
+ <updated>2018-07-09T09:35:01Z</updated>
+ <entry>
+  <title type="text">File Manager for DrRacket</title>
+  <link rel="alternate" href="http://www.racket-zh.org/2018\07\file-manager-for-drracket.html?utm_source=all&amp;utm_medium=Atom" />
+  <id>urn:http-www-racket-zh-org:-2018-07-file-manager-for-drracket-html</id>
+  <published>2018-07-09T09:35:01Z</published>
+  <updated>2018-07-09T09:35:01Z</updated>
+  <author>
+   <name>Syntacticlosure</name></author>
+  <content type="html">
+&lt;p&gt;在DrRacket上面写代码是一件痛苦的事情，因为没有文件管理器，所以当有很多文件需要编辑的时候需要 一个一个打开，而且容易打开许多窗口，切换起来也及其麻烦。&lt;/p&gt;
+
+&lt;p&gt;为了解决这个问题，我写了一个插件。&lt;/p&gt;
+&lt;!-- more--&gt;
+
+&lt;div class="figure"&gt;&lt;img src="https://user-images.githubusercontent.com/22510026/42439375-5663ee04-8395-11e8-84e3-af6a89b32532.png" alt="image" /&gt;
+ &lt;p class="caption"&gt;image&lt;/p&gt;&lt;/div&gt;
+
+&lt;p&gt;要安装她，请使用如下命令：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;raco pkg install files-viewer&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或者在DrRacket的Package Manager里面搜索files-viewer安装。&lt;/p&gt;
+
+&lt;p&gt;安装完成之后，这时插件还没有被显示，你需要点击view菜单下的show the file manager选项，然后左边就会出现一个文件管理器 。你可以自由拖动她到一个合适的大小，并且下次启动DrRacket依然会以该大小显示。&lt;/p&gt;
+
+&lt;p&gt;当你的文件结构发生了变化，请立即使用refresh，文件管理器会自动更新变化。&lt;/p&gt;
+
+&lt;p&gt;当你需要编辑某个文件夹下的代码时，请右击文件管理器，选择change the directory，然后选择你需要编辑的文件夹。&lt;/p&gt;
+
+&lt;p&gt;当你不需要显示某些文件的时候，使用file filter功能，如不需要显示bak文件，就将file filter配置为 .bak 。&lt;/p&gt;
+
+&lt;p&gt;你可以快速在目录下打开命令行，只需要使用open terminal here选项，但是在此之前需要配置与你系统相关的终端启动命令。&lt;/p&gt;
+
+&lt;p&gt;如在windows下，你可以使用该配置：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;start /d ~a cmd&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;~a代表所选中的文件所在目录或直接选中的目录。&lt;/p&gt;</content></entry>
  <entry>
   <title type="text">racket 7.0.0.2 is out</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018/06/racket-7-0-0-2-is-out.html?utm_source=all&amp;utm_medium=Atom" />
+  <link rel="alternate" href="http://www.racket-zh.org/2018\06\racket-7-0-0-2-is-out.html?utm_source=all&amp;utm_medium=Atom" />
   <id>urn:http-www-racket-zh-org:-2018-06-racket-7-0-0-2-is-out-html</id>
   <published>2018-06-18T00:09:43Z</published>
   <updated>2018-06-18T00:09:43Z</updated>
@@ -54,7 +92,7 @@
 &lt;p&gt;这意味着racket的宏系统更加完善和强大了。&lt;/p&gt;</content></entry>
  <entry>
   <title type="text">Continuation Marks的简单实现</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018/06/contmarks.html?utm_source=all&amp;utm_medium=Atom" />
+  <link rel="alternate" href="http://www.racket-zh.org/2018\06\contmarks.html?utm_source=all&amp;utm_medium=Atom" />
   <id>urn:http-www-racket-zh-org:-2018-06-contmarks-html</id>
   <published>2018-06-17T01:43:00Z</published>
   <updated>2018-06-17T01:43:00Z</updated>
@@ -431,7 +469,7 @@
 &lt;p&gt;当然它可以改进的地方还有很多，可以将关联列表改为weak-eq-hashtable，进一步提高space safety；可以对哈希表加锁，适应多线程环境；可以把一些数据结构用record封装，实现&lt;code&gt;continuation-mark-key?&lt;/code&gt;和&lt;code&gt;continuation-mark-set?&lt;/code&gt;等。这里为了简明不进行这些修改，改进过的版本可以在这个&lt;a href="https://github.com/yjqww6/chez-contmarks"&gt;repo&lt;/a&gt;中找到。&lt;/p&gt;</content></entry>
  <entry>
   <title type="text">Bindings as Sets of Scopes</title>
-  <link rel="alternate" href="http://www.racket-zh.org/2018/06/bindings-as-sets-of-scopes.html?utm_source=all&amp;utm_medium=Atom" />
+  <link rel="alternate" href="http://www.racket-zh.org/2018\06\bindings-as-sets-of-scopes.html?utm_source=all&amp;utm_medium=Atom" />
   <id>urn:http-www-racket-zh-org:-2018-06-bindings-as-sets-of-scopes-html</id>
   <published>2018-06-14T06:19:35Z</published>
   <updated>2018-06-14T06:19:35Z</updated>
