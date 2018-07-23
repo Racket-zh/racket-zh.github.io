@@ -17,10 +17,6 @@ Q：Racket语言和Scheme语言有区别吗？
 
 A：Racket语言可以看做Scheme的超集，但还是有一些区别的，总体来说，Racket更好用。
 @section{}
-Q：我想要设置DrRacket的背景图片，怎么办？
-
-A：使用DrRacketTheme插件，使用raco pkg install DrRacketTheme命令安装后，在view菜单下的set background里面进行设置。
-@section{}
 Q：我想要设置DrRacket的字体和配色，怎么办？
 
 A：View菜单下的Preference项。
@@ -28,6 +24,16 @@ A：View菜单下的Preference项。
 Q：DrRacket怎样一键调整缩进？
 
 A：Ctrl + I
+@section{}
+Q:有哪些常用的DrRacket插件？
+
+files-viewer:文件管理器
+
+DrRacketTheme:设置DrRacket的背景图片
+
+drracket-paredit:更快的编辑速度
+
+drracket-vim-tool:vim的编辑方式
 @section{}
 Q：Racket下为什么不能使用set-car!和set-cdr!
 
